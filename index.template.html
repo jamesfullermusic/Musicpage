@@ -88,14 +88,6 @@
       87%  { transform: translate(7%, -5%); }
     }
     @media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
-    /* wood grain overlay */
-    html::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 2; pointer-events: none;
-      opacity: .09;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Cfilter id='wg'%3E%3CfeTurbulence type='turbulence' baseFrequency='.015 .45' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='600' height='300' filter='url(%23wg)'/%3E%3C/svg%3E");
-      background-size: 600px 300px;
-    }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
@@ -1594,8 +1586,13 @@
         dataUrl
       })
     });
-    const json = await res.json();
-    if (!json.url) throw new Error('Upload failed');
+    let json = {};
+    try { json = await res.json(); } catch (e) { /* non-JSON error page (e.g. 413 too large) */ }
+    if (!res.ok || !json.url) {
+      throw new Error(res.status === 413 ? 'Image is too large to upload.'
+        : res.status === 401 ? 'Not authorized — log in to the admin again.'
+        : json.error || ('Upload failed (' + res.status + '). Is the Blob store connected in Vercel?'));
+    }
     return json.url;
   }
 
@@ -2055,11 +2052,14 @@
     const { img, crop: c, scale, slot } = cropState;
     const sx = Math.round(c.x / scale), sy = Math.round(c.y / scale);
     const sw = Math.round(c.w / scale), sh = Math.round(c.h / scale);
+    // Shrink big phone photos (max 2000px on the long side) so the upload stays small
+    const k = Math.min(1, 2000 / Math.max(sw, sh));
+    const ow = Math.max(1, Math.round(sw * k)), oh = Math.max(1, Math.round(sh * k));
     const out = document.createElement('canvas');
-    out.width = sw; out.height = sh;
-    out.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    out.width = ow; out.height = oh;
+    out.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, ow, oh);
     let dataUrl;
-    try { dataUrl = out.toDataURL('image/jpeg', 0.92); }
+    try { dataUrl = out.toDataURL('image/jpeg', 0.85); }
     catch(e) { dataUrl = cropState.src; }
     closeCrop();
 
@@ -2069,11 +2069,18 @@
       const origText = applyBtn ? applyBtn.textContent : '';
       if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = 'Uploading…'; }
       uploadToBlob(slot, dataUrl)
-        .then(url => photoApply(slot, url, sw, sh))
-        .catch(() => photoApply(slot, dataUrl, sw, sh))
+        .then(url => photoApply(slot, url, ow, oh))
+        .catch(err => {
+          // Never save the raw image data: other devices can't load it and it overflows storage.
+          const msg = document.getElementById('pf-msg');
+          if (msg) msg.innerHTML = '<span class="adm-err">Photo NOT saved — ' + escHtml(err.message) + '</span>';
+        })
         .finally(() => { if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = origText; } });
+    } else if (dataUrl.startsWith('data:')) {
+      const msg = document.getElementById('pf-msg');
+      if (msg) msg.innerHTML = '<span class="adm-err">Photo NOT saved — log in to the admin to upload photos.</span>';
     } else {
-      photoApply(slot, dataUrl, sw, sh);
+      photoApply(slot, dataUrl, ow, oh);
     }
   }
 
@@ -2104,8 +2111,8 @@
       stored.gal[idx] = val;
     }
 
-    localStorage.setItem(PHOTOS_KEY, JSON.stringify(stored));
-    syncToAPI(PHOTOS_KEY, stored);
+    try { localStorage.setItem(PHOTOS_KEY, JSON.stringify(stored)); } catch (e) { /* storage full: cloud copy still saves */ }
+    const syncP = syncToAPI(PHOTOS_KEY, stored);
 
     if (slot === 'portrait') {
       const el = document.getElementById('portrait-img');
@@ -2128,7 +2135,13 @@
 
     photosRenderSlots();
     const msg = document.getElementById('pf-msg');
-    if (msg) { msg.innerHTML = '<span class="adm-ok">✓ Photo updated.</span>'; setTimeout(() => { msg.innerHTML = ''; }, 3000); }
+    syncP.then(ok => {
+      if (!msg) return;
+      msg.innerHTML = ok
+        ? '<span class="adm-ok">✓ Photo saved — it will show on all devices.</span>'
+        : '<span class="adm-err">Photo shown here but NOT saved to the server, so other devices won\'t see it. Check Redis (KV) is connected in Vercel, then try again.</span>';
+      if (ok) setTimeout(() => { msg.innerHTML = ''; }, 3000);
+    });
   }
 
   function galRemove(i) {
