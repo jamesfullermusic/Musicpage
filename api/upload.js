@@ -15,6 +15,11 @@ export default async function handler(req, res) {
   const buffer = Buffer.from(base64, 'base64');
   const safeName = String(filename || `photo-${Date.now()}.jpg`).replace(/[^\w.-]/g, '_');
 
-  const blob = await put(`photos/${safeName}`, buffer, { access: 'public', contentType: mime });
-  return res.json({ url: blob.url });
+  try {
+    const blob = await put(`photos/${safeName}`, buffer, { access: 'public', contentType: mime });
+    return res.json({ url: blob.url });
+  } catch (e) {
+    console.error('photo upload failed:', e.message);
+    return res.status(500).json({ error: 'Blob storage is not connected to this project' });
+  }
 }
