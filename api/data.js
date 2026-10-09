@@ -1,18 +1,18 @@
 import { kv } from '@vercel/kv';
 import { checkPassword } from './_auth.js';
 
-const VALID = ['shows', 'content', 'photos'];
+const VALID = ['shows', 'content', 'photos', 'sections'];
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'GET') {
     try {
-      const [shows, content, photos] = await Promise.all(VALID.map((k) => kv.get(`band:${k}`)));
-      return res.json({ shows: shows ?? null, content: content ?? null, photos: photos ?? null });
+      const [shows, content, photos, sections] = await Promise.all(VALID.map((k) => kv.get(`band:${k}`)));
+      return res.json({ shows: shows ?? null, content: content ?? null, photos: photos ?? null, sections: sections ?? null });
     } catch (e) {
       // Storage not connected yet — the site falls back to band.config.mjs defaults.
-      return res.json({ shows: null, content: null, photos: null });
+      return res.json({ shows: null, content: null, photos: null, sections: null });
     }
   }
 

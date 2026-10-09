@@ -34,7 +34,8 @@ Everything band-specific lives in **one file: `band.config.mjs`**.
 
 ### Using the Admin panel
 Go to `https://their-site.com/#admin` and enter `ADMIN_PASS`. Tabs: **Shows**, **Content**
-(text + social links + form ID), **Photos** (upload and crop). Changes go live immediately.
+(text + social links + form ID), **Photos** (upload and crop), **Sections** (switch whole
+sections on/off). Changes go live immediately.
 
 > Admin saves override the defaults in `band.config.mjs`. If you later edit the config text and
 > nothing changes on the live site, that's why — use the Admin panel (Content → *Reset to
