@@ -939,7 +939,7 @@
 
     /* gallery: masonry */
     .gallery-grid { display: block; column-count: 3; column-gap: 1rem; margin-top: 3rem; }
-    .gallery-grid img { aspect-ratio: auto !important; height: auto; margin-bottom: 1rem; break-inside: avoid; border: 0; border-radius: 8px; object-fit: cover; }
+    .gallery-grid img { height: auto; margin-bottom: 1rem; break-inside: avoid; border: 0; border-radius: 8px; object-fit: cover; object-position: center; }
     .gallery-grid img:hover { transform: scale(1.015); }
 
     /* video / connect / footer */
@@ -987,7 +987,8 @@
       .show-d { font-size: 2.5rem; }
       .music-r h3, .email-col h3 { font-size: 1.8rem; }
       .gallery-grid { column-count: unset; }
-      .gallery-grid img { margin-bottom: 0; border-radius: 8px; }
+      /* phone: swipeable slides with a fixed 3:4 shape, so space is reserved before the photo loads */
+      .gallery-grid img { margin-bottom: 0; border-radius: 8px; flex: 0 0 84vw; width: 84vw; height: auto; aspect-ratio: 3 / 4 !important; object-fit: cover; }
     }
   </style>
 </head>
@@ -1976,6 +1977,25 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  // Backup reveal: some phones are slow or flaky with IntersectionObserver, which would leave a heading
+  // invisible. Also reveal anything that has scrolled into view.
+  (function () {
+    let ticking = false;
+    const check = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      document.querySelectorAll('.rv:not(.on)').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (!r.width && !r.height) return;
+        if (r.top < vh * 0.92 && r.bottom > 0) el.classList.add('on');
+      });
+    };
+    const req = () => { if (!ticking) { ticking = true; requestAnimationFrame(check); } };
+    window.addEventListener('scroll', req, { passive: true });
+    window.addEventListener('resize', req);
+    window.addEventListener('orientationchange', req);
+    setTimeout(check, 600);
+  })();
 
   // ── HERO PARALLAX — disabled on touch/small screens ──
   if (window.matchMedia('(min-width: 921px)').matches && !('ontouchstart' in window)) {
