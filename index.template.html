@@ -82,6 +82,9 @@
       background: url('images/film-grain.gif') 0 0 / 480px 360px repeat;
     }
     @media (prefers-reduced-motion: reduce) { body::after { display: none; } }
+    /* Sections that should NOT get the grain: add class="no-grain" to the <section>. It lifts the section
+       above the overlay (z-index 60 > 50) but still under the menu bar (500). Currently: About and Photos. */
+    section.no-grain { position: relative; z-index: 60; }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
@@ -667,7 +670,7 @@
     }
 
     /* ── GALLERY ── */
-    #gallery { background: var(--bg-3); position: relative; z-index: 10; }
+    #gallery { background: var(--bg-3); position: relative; }
     .gallery-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 1rem; margin-top: 2.5rem;
@@ -1025,7 +1028,7 @@
 </section>
 
 <!-- ABOUT -->
-<section id="about">
+<section id="about" class="no-grain">
   <div class="sec-line"></div>
   <div class="wrap">
     <div class="about-grid">
@@ -1113,7 +1116,7 @@
 </section>
 
 <!-- GALLERY -->
-<section id="gallery">
+<section id="gallery" class="no-grain">
   <div class="sec-line"></div>
   <div class="wrap">
     <span class="eyebrow rv" data-edit="gallery.eyebrow" data-label="Small heading">Photos</span>
