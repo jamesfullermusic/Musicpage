@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { getValue, setValue } from './_store.js';
 import { checkPassword } from './_auth.js';
 
 const VALID = ['shows', 'content', 'photos', 'sections'];
@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const [shows, content, photos, sections] = await Promise.all(VALID.map((k) => kv.get(`band:${k}`)));
+      const [shows, content, photos, sections] = await Promise.all(VALID.map((k) => getValue(`band:${k}`)));
       return res.json({ shows: shows ?? null, content: content ?? null, photos: photos ?? null, sections: sections ?? null });
     } catch (e) {
       // Storage not connected yet — the site falls back to band.config.mjs defaults.
@@ -22,7 +22,12 @@ export default async function handler(req, res) {
     if (ok === 'not_configured') return res.status(500).json({ error: 'ADMIN_PASS is not set' });
     if (!ok) return res.status(401).json({ error: 'Unauthorized' });
     if (!VALID.includes(key)) return res.status(400).json({ error: 'Invalid key' });
-    await kv.set(`band:${key}`, value);
+    try {
+      await setValue(`band:${key}`, value);
+    } catch (e) {
+      console.error('data save failed:', e.message);
+      return res.status(500).json({ error: 'Storage is not connected' });
+    }
     return res.json({ ok: true });
   }
 

@@ -24,6 +24,9 @@ Everything band-specific lives in **one file: `band.config.mjs`**.
 5. **Turn on storage** (this is what lets the Admin panel save): Vercel project → *Storage* tab →
    add a **KV / Redis** store (via the Upstash Redis marketplace option) and a **Blob** store, and
    connect both to the project. Vercel adds the environment variables automatically.
+   *Already have a Redis database elsewhere (e.g. Redis Cloud)?* Skip the KV store and instead add an
+   environment variable `REDIS_URL` = `redis://default:PASSWORD@HOST:PORT` (Settings → Environment
+   Variables). Keep that URL out of the repo. Still add the Blob store for photos.
 6. **Set the admin password:** Project → *Settings → Environment Variables* → add `ADMIN_PASS`
    with a password for the band (all environments). **Redeploy** afterwards.
    The admin refuses to work until this is set — there is no default password.
