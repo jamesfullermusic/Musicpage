@@ -23,7 +23,7 @@ export default {
     description: 'James Fuller — singer-songwriter. Original songs, live shows, and music to stream.',
     shareDescription: 'Original songs · Live music · Stream now.',   // shown in iMessage/Facebook previews
     favicon: '/favicon.svg',
-    ogImage: 'images/og-preview.png',         // 1200×630 PNG/JPG for link previews ('' to skip). Source: scripts/og-image.html
+    ogImage: 'images/og-preview.jpg',         // 1200×630 PNG/JPG for link previews ('' to skip). Source: scripts/og-image.html
     footerNote: 'Thanks for listening.',  // small line in footer ('' to hide)
   },
 
