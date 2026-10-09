@@ -98,16 +98,18 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 500;
       display: flex; align-items: center; justify-content: space-between;
       padding: 1.1rem 4rem;
-      /* always-visible, semi-transparent bar so the name + menu stay on screen while scrolling */
-      background: rgba({{theme.bgRgb}},.5);
+      /* hidden at the very top of the page; slides in as a semi-transparent bar once you scroll */
+      background: rgba({{theme.bgRgb}},.72);
       -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-      transition: background .4s, padding .3s, border-color .4s;
       border-bottom: 1px solid var(--border);
+      transform: translateY(-100%); opacity: 0; pointer-events: none;
+      transition: transform .4s ease, opacity .4s ease, padding .3s;
     }
     nav.solid {
-      background: rgba({{theme.bgRgb}},.72);
+      transform: translateY(0); opacity: 1; pointer-events: auto;
       padding: .85rem 4rem;
     }
+    @media (prefers-reduced-motion: reduce) { nav { transition: none; } }
     .nav-logo {
       font-family: 'Afacad', sans-serif;
       font-size: 1.2rem; font-weight: 700; white-space: nowrap;
@@ -1540,7 +1542,9 @@
   const nav = document.getElementById('nav');
   const heroName = document.querySelector('.hero-name');
   function updateNav() {
-    nav.classList.toggle('solid', window.scrollY > 60);
+    const scrolled = window.scrollY > 60;
+    nav.classList.toggle('solid', scrolled);
+    if (!scrolled) document.getElementById('navLinks').classList.remove('open');
     // show the name in the bar once the big hero name has slid up under it
     if (heroName) {
       const hiddenHero = heroName.getClientRects().length === 0;
