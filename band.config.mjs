@@ -128,16 +128,16 @@ export default {
     formspreeId: '',             // formspree.io form ID so inquiries land in the band's inbox
   },
 
-  // ── Colors (defaults = warm gold-on-black). Hex only. ─────────────────────
+  // ── Colors (dark near-black with pale lime-cream text). Hex only. ─────────────────────
   theme: {
-    bg:     '#0c0a08',   // page background
-    bg2:    '#141009',   // alternate section background
-    bg3:    '#1c1710',   // cards / inputs
-    gold:   '#c9943a',   // main accent
-    goldLt: '#e0b060',   // accent hover / highlights
-    amber:  '#d97d2a',   // secondary accent
-    cream:  '#f0e8d0',   // headings / bright text
-    text:   '#c0ad90',   // body text
-    dim:    '#6a5a3e',   // muted text
+    bg:     '#151515',   // page background
+    bg2:    '#050505',   // alternate section background
+    bg3:    '#212713',   // cards / inputs
+    gold:   '#edffc6',   // main accent (pale lime-cream)
+    goldLt: '#f7ffe0',   // accent hover / highlights
+    amber:  '#843fbd',   // secondary accent (purple)
+    cream:  '#edffc6',   // headings / bright text
+    text:   '#cedfa9',   // body text
+    dim:    '#a1ae84',   // muted text
   },
 };
