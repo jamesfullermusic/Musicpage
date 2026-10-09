@@ -63,8 +63,8 @@ The Admin panel only works on the deployed site (or with `npx vercel dev`), beca
 
 ## Changing the look
 - **Colors:** `theme` in the config.
-- **Fonts:** they're Google Fonts (Playfair Display, Cormorant Garamond, Karla) loaded in
-  `index.template.html`. Swap the `<link>` and search the file for those names.
+- **Fonts:** Afacad (Google Font), loaded in `index.template.html`. Swap the `<link>` and search the
+  file for `Afacad` to change it.
 - **Layout/sections:** edit `index.template.html` directly.
 
 ## Before you hand it off — checklist
