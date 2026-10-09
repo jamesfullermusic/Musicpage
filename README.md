@@ -63,6 +63,8 @@ The Admin panel only works on the deployed site (or with `npx vercel dev`), beca
 
 ## Changing the look
 - **Colors:** `theme` in the config.
+- **Hero video:** set `hero.video` in the config (a path in `/images` or a https link), or paste a link in
+  Admin → Photos → Hero Video. Muted, looping; the hero photo is the fallback. Keep it under ~8 MB.
 - **Fonts:** Afacad (Google Font), loaded in `index.template.html`. Swap the `<link>` and search the
   file for `Afacad` to change it.
 - **Layout/sections:** edit `index.template.html` directly.
