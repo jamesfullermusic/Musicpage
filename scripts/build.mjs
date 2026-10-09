@@ -50,4 +50,13 @@ for (const f of ['images', 'favicon.svg', 'robots.txt']) {
   const src = path.join(root, f);
   if (fs.existsSync(src)) fs.cpSync(src, path.join(out, f), { recursive: true });
 }
+// ── bundle the browser upload helper for the admin's video upload ─────────
+try {
+  const { build } = await import('esbuild');
+  await build({
+    entryPoints: [path.join(root, 'scripts', 'blob-client-entry.js')],
+    outfile: path.join(out, 'blob-client.js'),
+    bundle: true, format: 'esm', platform: 'browser', minify: true, logLevel: 'error',
+  });
+} catch (e) { console.warn('⚠ could not bundle blob-client.js — video upload disabled:', e.message); }
 console.log(`✔ Built ${cfg.artist.name} → public/index.html`);

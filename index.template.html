@@ -1178,8 +1178,13 @@
           <div class="adm-divider"></div>
           <span class="adm-label">Hero Video (optional)</span>
           <div class="portrait-url-row" style="flex-direction:column;align-items:stretch;gap:.6rem">
-            <p style="font-size:.78rem;color:var(--dim);line-height:1.5">Plays muted and looping behind the hero text, with the hero photo as fallback. Paste a link to an .mp4 (short, compressed, no audio — under ~8 MB is best).</p>
-            <input class="adm-input" id="pf-hero-video-url" placeholder="https://… .mp4">
+            <p style="font-size:.78rem;color:var(--dim);line-height:1.5">Plays muted and looping behind the hero text, with the hero photo as fallback. Upload a file (up to 200 MB) or paste a link. Short, compressed and without audio works best — under ~10 MB loads fastest.</p>
+            <label class="adm-file-label" style="width:100%;padding:.7rem 1rem" id="hv-file-label">
+              Upload Video (.mp4 / .webm)
+              <input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="heroVideoUpload(event)">
+            </label>
+            <div id="hv-progress" style="display:none;font-size:.78rem;color:var(--text)"></div>
+            <input class="adm-input" id="pf-hero-video-url" placeholder="Or paste a link — https://… .mp4">
             <div class="adm-row" style="margin-top:0">
               <button class="adm-btn" onclick="heroVideoSet()">Use Video</button>
               <button class="adm-btn ghost" onclick="heroVideoRemove()">Remove Video</button>
@@ -2246,6 +2251,39 @@
     photosRenderSlots();
     const msg = document.getElementById('pf-msg');
     if (msg) { msg.innerHTML = '<span class="adm-ok">' + text + '</span>'; setTimeout(() => { msg.innerHTML = ''; }, 3000); }
+  }
+  async function heroVideoUpload(event) {
+    const input = event.target;
+    const file = input.files[0];
+    input.value = '';
+    if (!file) return;
+    const msg = document.getElementById('pf-msg');
+    const bar = document.getElementById('hv-progress');
+    const fail = t => { if (msg) msg.innerHTML = '<span class="adm-err">Video NOT saved — ' + escHtml(t) + '</span>'; bar.style.display = 'none'; };
+    if (!/^video\/(mp4|webm|quicktime)$/.test(file.type)) return fail('use an .mp4 or .webm file.');
+    if (file.size > 200 * 1024 * 1024) return fail('file is over 200 MB — compress it first.');
+    if (!_adminPass) return fail('log in to the admin first.');
+    if (msg) msg.innerHTML = '';
+    bar.style.display = 'block'; bar.textContent = 'Preparing upload…';
+    try {
+      const { upload } = await import('/blob-client.js');
+      const blob = await upload('hero-video/' + file.name.replace(/[^\w.-]/g, '_'), file, {
+        access: 'public',
+        handleUploadUrl: '/api/video-upload',
+        clientPayload: _adminPass,
+        multipart: file.size > 20 * 1024 * 1024,
+        onUploadProgress: ({ percentage }) => { bar.textContent = 'Uploading… ' + Math.round(percentage) + '%'; },
+      });
+      bar.style.display = 'none';
+      document.getElementById('pf-hero-video-url').value = blob.url;
+      heroVideoSave(blob.url, '✓ Video uploaded and set as the hero.');
+    } catch (e) {
+      const m = String(e && e.message || e);
+      fail(/Unauthorized/.test(m) ? 'not authorized — log in to the admin again.'
+        : /ADMIN_PASS/.test(m) ? 'ADMIN_PASS is not set in Vercel.'
+        : /token|BLOB|store/i.test(m) ? 'could not get upload permission. Log in again, and check the Blob store is connected in Vercel.'
+        : m);
+    }
   }
   function heroVideoSet() {
     const url = document.getElementById('pf-hero-video-url').value.trim();
