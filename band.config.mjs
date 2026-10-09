@@ -56,6 +56,7 @@ export default {
     background: 'images/hero-bg.jpg',
     video: '',                // optional looping hero video: 'images/hero.mp4' or a https:// link ('' = photo only).
                               // Keep it short, muted, under ~8 MB. The photo above is the fallback.
+    videoMobile: '',          // optional smaller video for phones (720p, ~3-6 MB). '' = phones use the main video.
   },
 
   // ── About ─────────────────────────────────────────────────────────────────
