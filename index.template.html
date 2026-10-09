@@ -495,6 +495,7 @@
 
     /* Smooth scroll anchor offset for fixed nav */
     section[id], footer[id] { scroll-margin-top: 70px; }
+    section[hidden], .nav-links li[hidden] { display: none !important; }
 
     @media (max-width: 920px) {
       section { padding: 5rem 2rem; }
@@ -761,12 +762,12 @@
 <nav id="nav">
   <a href="#hero" class="nav-logo">{{artist.initials}}<em>·</em></a>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#about">About</a></li>
-    <li><a href="#music">Music</a></li>
-    <li><a href="#shows">Shows</a></li>
-    <li><a href="#gallery">Photos</a></li>
-    {{#if video.youtubeId}}<li><a href="#videos">Videos</a></li>{{/if}}
-    <li><a href="#connect">Connect</a></li>
+    <li data-section="about"><a href="#about">About</a></li>
+    <li data-section="music"><a href="#music">Music</a></li>
+    <li data-section="shows"><a href="#shows">Shows</a></li>
+    <li data-section="gallery"><a href="#gallery">Photos</a></li>
+    {{#if video.youtubeId}}<li data-section="videos"><a href="#videos">Videos</a></li>{{/if}}
+    <li data-section="connect"><a href="#connect">Connect</a></li>
   </ul>
   <div class="nav-burger" id="burger" onclick="toggleNav()">
     <span></span><span></span><span></span>
@@ -1058,6 +1059,7 @@
           <button class="adm-tab active" onclick="admTab('shows',this)">Shows</button>
           <button class="adm-tab" onclick="admTab('content',this)">Content</button>
           <button class="adm-tab" onclick="admTab('photos',this)">Photos</button>
+          <button class="adm-tab" onclick="admTab('sections',this)">Sections</button>
         </div>
 
         <!-- ── TAB: SHOWS ── -->
@@ -1122,6 +1124,16 @@
             <button class="adm-btn ghost" onclick="contentReset()">Reset to Defaults</button>
           </div>
           <div class="adm-msg" id="cf-msg"></div>
+          <div class="adm-divider"></div>
+          <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
+        </div>
+
+        <!-- ── TAB: SECTIONS ── -->
+        <div id="adm-panel-sections" class="adm-tab-panel">
+          <span class="adm-label">Show / Hide Sections</span>
+          <p style="font-size:.78rem;color:var(--dim);line-height:1.5;margin:0 0 .9rem">Switch a section off to hide it (and its menu link) from the public site. Your content is kept, so you can switch it back on any time. The top banner is always shown.</p>
+          <div id="sec-toggles"></div>
+          <div class="adm-msg" id="sec-msg"></div>
           <div class="adm-divider"></div>
           <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
         </div>
@@ -1268,6 +1280,7 @@
   const SHOWS_KEY   = SLUG + '_shows';
   const CONTENT_KEY = SLUG + '_content';
   const PHOTOS_KEY  = SLUG + '_photos';
+  const SECTIONS_KEY = SLUG + '_sections';
 
   function getShows() {
     try { const s = localStorage.getItem(SHOWS_KEY); if (s) return JSON.parse(s); } catch(e) {}
@@ -1361,6 +1374,36 @@
   }
   applyContent();
   applyPhotos();
+
+  // ── SECTIONS (on/off) ──
+  const SECTION_LIST = [
+    { id: 'about',   label: 'About' },
+    { id: 'music',   label: 'Music' },
+    { id: 'shows',   label: 'Shows' },
+    { id: 'gallery', label: 'Photos' },
+    { id: 'videos',  label: 'Videos' },
+    { id: 'connect', label: 'Connect & Inquiry Form' },
+  ];
+  const SECTION_DEFAULTS = Object.assign({}, BAND.sections || {});
+  function getSections() {
+    let saved = {};
+    try { const s = localStorage.getItem(SECTIONS_KEY); if (s) saved = JSON.parse(s) || {}; } catch(e) {}
+    const out = {};
+    SECTION_LIST.forEach(({ id }) => {
+      out[id] = id in saved ? saved[id] !== false : SECTION_DEFAULTS[id] !== false;
+    });
+    return out;
+  }
+  function applySections() {
+    const st = getSections();
+    SECTION_LIST.forEach(({ id }) => {
+      const sec = document.getElementById(id);
+      if (sec) sec.hidden = !st[id];
+      const li = document.querySelector('.nav-links li[data-section="' + id + '"]');
+      if (li) li.hidden = !st[id];
+    });
+  }
+  applySections();
 
   // ── SHOWS RENDER ──
   const MONTH_MAP = {
@@ -1506,10 +1549,11 @@
     try {
       const res = await fetch('/api/data');
       if (!res.ok) return;
-      const { shows, content, photos } = await res.json();
+      const { shows, content, photos, sections } = await res.json();
       if (shows)   { localStorage.setItem(SHOWS_KEY,   JSON.stringify(shows));   renderShows();  }
       if (content) { localStorage.setItem(CONTENT_KEY, JSON.stringify(content)); applyContent(); }
       if (photos)  { localStorage.setItem(PHOTOS_KEY,  JSON.stringify(photos));  applyPhotos();  }
+      if (sections) { localStorage.setItem(SECTIONS_KEY, JSON.stringify(sections)); applySections(); sectionsRenderToggles(); }
     } catch(e) { /* use localStorage fallback silently */ }
   }
   loadFromAPI();
@@ -1550,6 +1594,7 @@
       admRenderList();
       contentPopulateForm();
       photosRenderSlots();
+      sectionsRenderToggles();
     } else {
       errEl.textContent = msg;
       errEl.style.display = 'block';
@@ -1696,6 +1741,34 @@
     contentPopulateForm();
     document.getElementById('cf-msg').innerHTML = '<span class="adm-ok">✓ Reset to defaults.</span>';
     setTimeout(() => { const m = document.getElementById('cf-msg'); if(m) m.innerHTML=''; }, 3000);
+  }
+
+  // ── ADMIN: SECTIONS ──
+  function sectionsRenderToggles() {
+    const box = document.getElementById('sec-toggles');
+    if (!box) return;
+    const st = getSections();
+    box.innerHTML = SECTION_LIST.map(({ id, label }) => {
+      const exists = !!document.getElementById(id);
+      return `
+        <label style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border);${exists ? 'cursor:pointer' : 'opacity:.5'}">
+          <span style="color:var(--cream);font-size:.9rem">${label}${exists ? '' : '<small style="display:block;color:var(--dim);font-size:.72rem;margin-top:.2rem">Add a YouTube video ID in band.config.mjs to enable this section.</small>'}</span>
+          <input type="checkbox" ${st[id] && exists ? 'checked' : ''} ${exists ? '' : 'disabled'} onchange="sectionToggle('${id}', this.checked)" style="width:1.2rem;height:1.2rem;accent-color:var(--gold);flex-shrink:0">
+        </label>`;
+    }).join('');
+  }
+
+  async function sectionToggle(id, on) {
+    const st = getSections();
+    st[id] = on;
+    localStorage.setItem(SECTIONS_KEY, JSON.stringify(st));
+    applySections();
+    const msg = document.getElementById('sec-msg');
+    const ok = await syncToAPI(SECTIONS_KEY, st);
+    msg.innerHTML = ok
+      ? '<span class="adm-ok">✓ Saved — site updated.</span>'
+      : '<span class="adm-err">Saved locally, but failed to sync to the server. Try again or check your connection.</span>';
+    setTimeout(() => { msg.innerHTML = ''; }, 3500);
   }
 
   // ── ADMIN: PHOTOS ──
@@ -2096,6 +2169,7 @@
         syncToAPI(SHOWS_KEY,   getShows()),
         syncToAPI(CONTENT_KEY, getContent()),
         syncToAPI(PHOTOS_KEY,  getPhotos()),
+        syncToAPI(SECTIONS_KEY, getSections()),
       ]);
       msg.innerHTML = '<span style="color:#6aad6a">✓ Synced</span>';
     } catch(e) {

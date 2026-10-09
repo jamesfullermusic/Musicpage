@@ -35,6 +35,19 @@ export default {
     initials: 'BN',           // small logo in the top nav
   },
 
+  // ── Sections on/off ───────────────────────────────────────────────────────
+  // Starting point only — the Admin panel's "Sections" tab overrides these.
+  // false = hidden from the site and the menu. (The top banner is always shown;
+  // Videos also needs video.youtubeId below.)
+  sections: {
+    about: true,
+    music: true,
+    shows: true,
+    gallery: true,
+    videos: true,
+    connect: true,
+  },
+
   // ── Hero ──────────────────────────────────────────────────────────────────
   hero: {
     eyebrow: 'Singer · Songwriter · Guitar',
