@@ -54,6 +54,8 @@ export default {
     tagline: '"Your tagline goes here"',
     genre: 'Genre · Genre · Original Music',
     background: 'images/hero-bg.jpg',
+    video: '',                // optional looping hero video: 'images/hero.mp4' or a https:// link ('' = photo only).
+                              // Keep it short, muted, under ~8 MB. The photo above is the fallback.
   },
 
   // ── About ─────────────────────────────────────────────────────────────────

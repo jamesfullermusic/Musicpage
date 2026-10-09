@@ -63,17 +63,31 @@
       overflow-x: hidden;
     }
 
-    /* grain overlay */
+    /* film grain overlay — fine monochrome noise that re-jitters ~10x/sec like projected film */
     body::after {
       content: '';
       position: fixed;
-      inset: 0;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
       z-index: 3;
       pointer-events: none;
-      opacity: .04;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 200px 200px;
+      opacity: .11;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      will-change: transform;
+      animation: filmGrain .8s steps(1) infinite;
     }
+    @keyframes filmGrain {
+      0%   { transform: translate(0, 0); }
+      12%  { transform: translate(-4%, -7%); }
+      25%  { transform: translate(-9%, 4%); }
+      37%  { transform: translate(5%, -11%); }
+      50%  { transform: translate(-6%, 9%); }
+      62%  { transform: translate(9%, 2%); }
+      75%  { transform: translate(-3%, 12%); }
+      87%  { transform: translate(7%, -5%); }
+    }
+    @media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
     /* wood grain overlay */
     html::before {
       content: '';
@@ -148,6 +162,12 @@
       object-fit: cover; object-position: center top; z-index: 0;
       filter: brightness(.28) saturate(.6) sepia(.2); pointer-events: none;
     }
+    .hero-bg-video {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center; z-index: 0;
+      filter: brightness(.45) saturate(.8); pointer-events: none;
+    }
+    .hero-bg-video[hidden] { display: none; }
     .hero-overlay {
       position: absolute; inset: 0; z-index: 1; pointer-events: none;
       background: linear-gradient(to bottom,
@@ -778,6 +798,7 @@
 <!-- HERO -->
 <section id="hero">
   <img id="hero-bg-img" class="hero-bg-img" src="{{hero.background}}" alt="" aria-hidden="true">
+  <video id="hero-bg-video" class="hero-bg-video" muted loop playsinline preload="metadata" aria-hidden="true" hidden onerror="this.hidden=true"></video>
   <div class="hero-overlay"></div>
   <div class="hero-eyebrow" id="hero-eyebrow">{{hero.eyebrow}}</div>
   <h1 class="hero-name">
@@ -1157,6 +1178,16 @@
             </div>
           </div>
           <div class="adm-divider"></div>
+          <span class="adm-label">Hero Video (optional)</span>
+          <div class="portrait-url-row" style="flex-direction:column;align-items:stretch;gap:.6rem">
+            <p style="font-size:.78rem;color:var(--dim);line-height:1.5">Plays muted and looping behind the hero text, with the hero photo as fallback. Paste a link to an .mp4 (short, compressed, no audio — under ~8 MB is best).</p>
+            <input class="adm-input" id="pf-hero-video-url" placeholder="https://… .mp4">
+            <div class="adm-row" style="margin-top:0">
+              <button class="adm-btn" onclick="heroVideoSet()">Use Video</button>
+              <button class="adm-btn ghost" onclick="heroVideoRemove()">Remove Video</button>
+            </div>
+          </div>
+          <div class="adm-divider"></div>
           <span class="adm-label">Portrait Photo</span>
           <div class="portrait-slot">
             <img id="ps-portrait" class="portrait-slot-preview" src="images/A7F28CB1-8F98-43EA-A8BA-413A6B254159.JPG" alt="Portrait preview">
@@ -1330,6 +1361,27 @@
     grid.querySelectorAll('.rv').forEach(el => { if (obs) obs.observe(el); });
   }
 
+  // ── HERO VIDEO ──
+  const HERO_VIDEO_DEFAULT = BAND.hero.video || '';
+  function getHeroVideo() {
+    const p = getPhotos();
+    return typeof p.heroVideo === 'string' ? p.heroVideo : HERO_VIDEO_DEFAULT;
+  }
+  function applyHeroVideo() {
+    const el = document.getElementById('hero-bg-video');
+    if (!el) return;
+    const url = getHeroVideo();
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (url && !reduced) {
+      if (el.getAttribute('src') !== url) el.setAttribute('src', url);
+      el.hidden = false;
+      const pr = el.play(); if (pr && pr.catch) pr.catch(() => {});
+    } else {
+      el.hidden = true;
+      if (el.getAttribute('src')) { el.pause(); el.removeAttribute('src'); el.load(); }
+    }
+  }
+
   // ── APPLY STORED DATA TO PAGE ──
   function applyContent() {
     const c = getContent();
@@ -1372,6 +1424,7 @@
       if (el) el.src = getSrc(p.heroBg);
     }
     renderGallery();
+    applyHeroVideo();
   }
   applyContent();
   applyPhotos();
@@ -1784,6 +1837,8 @@
     const heroBgSrc = stored.heroBg ? getSrc(stored.heroBg) : PHOTO_DEFAULTS.heroBg;
     const psHeroBg = document.getElementById('ps-hero-bg');
     if (psHeroBg) psHeroBg.src = heroBgSrc;
+    const hv = document.getElementById('pf-hero-video-url');
+    if (hv) hv.value = getHeroVideo();
     // Update tour poster preview
     const tourSrc = stored.tourPoster ? getSrc(stored.tourPoster) : PHOTO_DEFAULTS.tourPoster;
     const psTour = document.getElementById('ps-tour-poster');
@@ -2104,6 +2159,7 @@
     if (tourEl) { tourEl.src = PHOTO_DEFAULTS.tourPoster; tourEl.style.aspectRatio = ''; }
     const heroBgEl = document.getElementById('hero-bg-img');
     if (heroBgEl) heroBgEl.src = PHOTO_DEFAULTS.heroBg;
+    applyHeroVideo();
     renderGallery();
     photosRenderSlots();
     const msg = document.getElementById('pf-msg');
@@ -2151,6 +2207,31 @@
     if (!url) return;
     document.getElementById('pf-tour-url').value = '';
     openCrop('tourPoster', url);
+  }
+
+  function heroVideoSave(url, text) {
+    const stored = getPhotos();
+    stored.heroVideo = url;
+    localStorage.setItem(PHOTOS_KEY, JSON.stringify(stored));
+    syncToAPI(PHOTOS_KEY, stored);
+    applyHeroVideo();
+    photosRenderSlots();
+    const msg = document.getElementById('pf-msg');
+    if (msg) { msg.innerHTML = '<span class="adm-ok">' + text + '</span>'; setTimeout(() => { msg.innerHTML = ''; }, 3000); }
+  }
+  function heroVideoSet() {
+    const url = document.getElementById('pf-hero-video-url').value.trim();
+    const msg = document.getElementById('pf-msg');
+    if (!url) return;
+    if (!/^(https?:\/\/|\/|[\w-][\w./-]*$)/i.test(url)) {
+      if (msg) msg.innerHTML = '<span class="adm-err">Enter a full link starting with https://</span>';
+      return;
+    }
+    heroVideoSave(url, '✓ Hero video updated.');
+  }
+  function heroVideoRemove() {
+    document.getElementById('pf-hero-video-url').value = '';
+    heroVideoSave('', '✓ Hero video removed.');
   }
 
   function photoFromHeroBgUrl() {
