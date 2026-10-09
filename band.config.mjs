@@ -17,9 +17,9 @@ export default {
   site: {
     slug: 'band-name',                        // lowercase letters, numbers, dashes only
     url: 'https://www.example.com',           // final domain, no trailing slash
-    title: 'Band Name — Genre · City',        // browser tab + link previews
-    siteName: 'Band Name Music',
-    description: 'Band Name — a short one-sentence description for Google.',
+    title: 'James Fuller — Genre · City',        // browser tab + link previews
+    siteName: 'James Fuller Music',
+    description: 'James Fuller — a short one-sentence description for Google.',
     shareDescription: 'Genre · Genre · Original Music.',   // shown in iMessage/Facebook previews
     favicon: '/favicon.svg',
     ogImage: 'images/og-preview.png',         // 1280×720 PNG/JPG for link previews ('' to skip)
@@ -28,11 +28,11 @@ export default {
 
   // ── Artist / band name ────────────────────────────────────────────────────
   artist: {
-    name: 'Band Name',        // full name (footer, alt text, admin header)
-    firstName: 'Band',        // big hero text, line 1 (white/cream)
-    lastName: 'Name',         // big hero text, line 2 (gold) — '' for one-line names
-    shortName: 'the band',    // used in sentences: "About ___", "Catch ___ Live"
-    initials: 'BN',           // small logo in the top nav
+    name: 'James Fuller',     // full name (footer, alt text, admin header)
+    firstName: 'James',       // big hero text, line 1 (white/cream)
+    lastName: 'Fuller',       // big hero text, line 2 (gold) — '' for one-line names
+    shortName: 'James',       // used in sentences: "About ___", "Catch ___ Live"
+    initials: 'JF',           // small logo in the top nav
   },
 
   // ── Sections on/off ───────────────────────────────────────────────────────
@@ -59,7 +59,7 @@ export default {
   // ── About ─────────────────────────────────────────────────────────────────
   about: {
     portrait: 'images/portrait.jpg',
-    portraitAlt: 'Band Name performing live',
+    portraitAlt: 'James Fuller performing live',
     pullQuote: '"A short quote or motto."',
     headingTop: 'A Sound Built',
     headingEm: 'From the Ground Up',
