@@ -16,13 +16,14 @@ export default {
   // ── Site / SEO ────────────────────────────────────────────────────────────
   site: {
     slug: 'band-name',                        // lowercase letters, numbers, dashes only
-    url: 'https://www.example.com',           // final domain, no trailing slash
+    url: 'https://musicpage.vercel.app',      // final domain, no trailing slash — change this when a custom domain is connected
+                                              // (link previews build their image address from it)
     title: 'James Fuller — Singer · Songwriter',        // browser tab + link previews
     siteName: 'James Fuller Music',
     description: 'James Fuller — singer-songwriter. Original songs, live shows, and music to stream.',
     shareDescription: 'Original songs · Live music · Stream now.',   // shown in iMessage/Facebook previews
     favicon: '/favicon.svg',
-    ogImage: 'images/og-preview.png',         // 1280×720 PNG/JPG for link previews ('' to skip)
+    ogImage: 'images/og-preview.png',         // 1200×630 PNG/JPG for link previews ('' to skip). Source: scripts/og-image.html
     footerNote: 'Thanks for listening.',  // small line in footer ('' to hide)
   },
 
