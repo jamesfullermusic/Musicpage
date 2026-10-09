@@ -40,6 +40,9 @@ Go to `https://their-site.com/#admin` and enter `ADMIN_PASS`. Tabs: **Shows**, *
 social links, Spotify / Apple Music / YouTube links, form ID, contact email), **Photos** (upload and
 crop, plus the hero video), **All Text** (every other word on the page: menu labels, headings, buttons,
 paragraphs, footer — edit and Save), **Sections** (switch whole sections on/off). Changes go live immediately.
+**Easiest way to edit text:** log in, press **✎ Edit on the page**, then click any text on the real page and type.
+Press **Save changes** (menu labels, headings, buttons, bios, footer — everything). The shortcut pills on the page
+jump to the photo, show-date and link editors, and each section has an on/off pill.
 
 > Admin saves override the defaults in `band.config.mjs`. If you later edit the config text and
 > nothing changes on the live site, that's why — use the Admin panel (Content → *Reset to

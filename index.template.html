@@ -71,9 +71,11 @@
       width: 200%; height: 200%;
       z-index: 3;
       pointer-events: none;
-      opacity: .11;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
+      /* two speckle layers (light + dark specks) so it reads as grain without lifting the blacks */
+      opacity: .18;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 7 0 0 0 -3.5'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -7 0 0 0 3.5'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E");
+      background-size: 256px 256px, 256px 256px;
       will-change: transform;
       animation: filmGrain .8s steps(1) infinite;
     }
@@ -119,6 +121,39 @@
     /* while the big hero name is on screen, the bar's name waits; it slides in as the hero name scrolls up under the bar */
     nav.name-hide .nav-logo { opacity: 0; transform: translateY(14px); pointer-events: none; }
     @media (prefers-reduced-motion: reduce) { .nav-logo { transition: none; } }
+
+    /* ── EDIT MODE (admin: "Edit on the page") ── */
+    html.editing nav { transform: none; opacity: 1; pointer-events: auto; }
+    html.editing nav .nav-logo { opacity: 1; transform: none; pointer-events: auto; }
+    html.editing [data-edit], html.editing [data-edit-content] {
+      outline: 1px dashed rgba({{theme.goldRgb}},.6); outline-offset: 3px; cursor: text; min-width: 2ch;
+    }
+    html.editing [data-edit-prompt] { cursor: pointer; }
+    html.editing [contenteditable]:hover { outline-style: solid; background: rgba({{theme.goldRgb}},.08); }
+    html.editing [contenteditable]:focus { outline: 2px solid var(--gold); background: rgba({{theme.goldRgb}},.14); }
+    html.editing [contenteditable]:empty::before { content: attr(data-ph); opacity: .55; font-style: italic; }
+    html.editing section.edit-dimmed > *:not(.edit-pill) { opacity: .4; }
+    .edit-pill {
+      position: absolute; z-index: 60; border: 1px solid var(--gold); background: rgba({{theme.bgRgb}},.92);
+      color: var(--gold); font: 700 .62rem 'Afacad', sans-serif; letter-spacing: .14em; text-transform: uppercase;
+      padding: .5rem .8rem; border-radius: 99px; cursor: pointer; white-space: nowrap;
+    }
+    .edit-pill:hover { background: var(--gold); color: var(--bg); }
+    .edit-pill.tl { top: .6rem; left: .6rem; } .edit-pill.tr { top: .6rem; right: .6rem; }
+    .edit-pill.bl { bottom: 1.2rem; left: 1.2rem; } .edit-pill.sec { top: 4.6rem; right: 1rem; }
+    #edit-bar {
+      display: none; position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 900;
+      align-items: center; gap: .6rem; flex-wrap: wrap; justify-content: center; width: max-content; max-width: calc(100vw - 1.5rem);
+      background: rgba({{theme.bgRgb}},.96); border: 1px solid var(--gold); border-radius: 14px; padding: .6rem .8rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,.6); font-family: 'Afacad', sans-serif;
+    }
+    html.editing #edit-bar { display: flex; }
+    #edit-status { color: var(--text); font-size: .8rem; padding: 0 .4rem; }
+    #edit-bar button {
+      border: 1px solid var(--gold); background: transparent; color: var(--gold); cursor: pointer;
+      font: 700 .64rem 'Afacad', sans-serif; letter-spacing: .14em; text-transform: uppercase; padding: .6rem .9rem; border-radius: 8px;
+    }
+    #edit-bar button.primary { background: var(--gold); color: var(--bg); }
     .nav-logo em { color: var(--gold); font-style: normal; }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
@@ -163,8 +198,17 @@
     }
     .hero-bg-video {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: center; z-index: 0;
-      filter: brightness(.45) saturate(.8); pointer-events: none;
+      object-fit: cover; object-position: center; z-index: 0; pointer-events: none; background: transparent;
+    }
+    #hero.has-video .hero-overlay {
+      background: linear-gradient(to bottom,
+        rgba({{theme.bgRgb}},.62) 0%, rgba({{theme.bgRgb}},.4) 40%, rgba({{theme.bgRgb}},.68) 100%);
+    }
+    .hero-play {
+      display: none; position: absolute; z-index: 5; right: 1.2rem; bottom: 1.4rem;
+      border: 1px solid var(--gold); background: rgba({{theme.bgRgb}},.7); color: var(--gold); cursor: pointer;
+      font: 700 .64rem 'Afacad', sans-serif; letter-spacing: .16em; text-transform: uppercase; padding: .7rem 1rem; border-radius: 99px;
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     }
     .hero-bg-video[hidden] { display: none; }
     .hero-overlay {
@@ -800,14 +844,14 @@
   <img id="hero-bg-img" class="hero-bg-img" src="{{hero.background}}" alt="" aria-hidden="true">
   <video id="hero-bg-video" class="hero-bg-video" muted loop playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture aria-hidden="true" hidden onerror="heroVideoStatus('error')" onplaying="heroVideoStatus('playing')"></video>
   <div class="hero-overlay"></div>
-  <div class="hero-eyebrow" id="hero-eyebrow">{{hero.eyebrow}}</div>
+  <div class="hero-eyebrow" id="hero-eyebrow" data-edit-content="heroEyebrow" data-label="Line above the name">{{hero.eyebrow}}</div>
   <h1 class="hero-name">
     <span class="hero-name-a" data-edit="hero.first" data-label="Big name — first line">{{artist.firstName}}</span>
     <span class="hero-name-b" data-edit="hero.last" data-label="Big name — second line (outlined)">{{artist.lastName}}</span>
   </h1>
-  <p class="hero-tagline" id="hero-tagline">{{hero.tagline}}</p>
+  <p class="hero-tagline" id="hero-tagline" data-edit-content="heroTagline" data-label="Tagline">{{hero.tagline}}</p>
   <div class="hero-rule"></div>
-  <div class="hero-genre" id="hero-genre">{{hero.genre}}</div>
+  <div class="hero-genre" id="hero-genre" data-edit-content="heroGenre" data-label="Genre line">{{hero.genre}}</div>
   <div class="hero-ctas">
     <a id="hero-cta-sp" href="{{social.spotify}}" target="_blank" rel="noopener" class="btn-gold" style="display:none">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
@@ -817,6 +861,7 @@
       <span data-edit="hero.ctaFollow" data-label="Button: Follow">Follow Along</span>
     </a>
   </div>
+  <button type="button" class="hero-play" id="hero-play" onclick="heroVideoPlayTap()">▶ Play video</button>
   <div class="hero-scroll">
     <span data-edit="hero.scroll" data-label="“Scroll” hint">Scroll</span>
     <div class="scroll-bar"></div>
@@ -834,16 +879,16 @@
           <img id="portrait-img" src="{{about.portrait}}" alt="{{about.portraitAlt}}">
         </div>
         <div class="portrait-offset"></div>
-        <div class="portrait-pull" id="about-pullquote">{{about.pullQuote}}</div>
+        <div class="portrait-pull" id="about-pullquote" data-edit-content="pullQuote" data-label="Quote on the photo">{{about.pullQuote}}</div>
       </div>
 
       <div>
         <span class="eyebrow rv" data-edit="about.eyebrow" data-label="Small heading">About {{artist.shortName}}</span>
         <h2 class="sh rv d1" data-edit="about.heading" data-rich data-label="Heading">{{about.headingTop}}<br><em>{{about.headingEm}}</em></h2>
         <div class="rule rv d2"></div>
-        <p class="body-serif rv d2" id="about-bio-1">{{about.bios.0}}</p>
-        <p class="body-serif rv d3" id="about-bio-2">{{about.bios.1}}</p>
-        <p class="body-serif rv d4" id="about-bio-3">{{about.bios.2}}</p>
+        <p class="body-serif rv d2" id="about-bio-1" data-edit-content="bio1" data-label="Bio paragraph 1">{{about.bios.0}}</p>
+        <p class="body-serif rv d3" id="about-bio-2" data-edit-content="bio2" data-label="Bio paragraph 2">{{about.bios.1}}</p>
+        <p class="body-serif rv d4" id="about-bio-3" data-edit-content="bio3" data-label="Bio paragraph 3">{{about.bios.2}}</p>
         <div class="about-stats rv d4">
           <div><span class="stat-n" data-edit="about.stat0v" data-label="Badge 1 — big text">{{about.stats.0.value}}</span><span class="stat-l" data-edit="about.stat0l" data-label="Badge 1 — small label">{{about.stats.0.label}}</span></div>
           <div><span class="stat-n" data-edit="about.stat1v" data-label="Badge 2 — big text">{{about.stats.1.value}}</span><span class="stat-l" data-edit="about.stat1l" data-label="Badge 2 — small label">{{about.stats.1.label}}</span></div>
@@ -1032,6 +1077,14 @@
   <img id="poster-lightbox-img" src="" alt="Tour poster full size">
 </div>
 
+<!-- EDIT BAR (shown only in edit mode) -->
+<div id="edit-bar">
+  <span id="edit-status">Editing — click any text on the page to change it</span>
+  <button class="primary" onclick="editSave()">Save changes</button>
+  <button onclick="editOpenAdmin('photos')">Photos, shows &amp; links…</button>
+  <button onclick="editExit()">Done</button>
+</div>
+
 <!-- ADMIN PANEL -->
 <div id="admin-overlay" style="display:none">
   <div id="admin-box">
@@ -1057,6 +1110,11 @@
 
       <!-- Dashboard -->
       <div id="adm-dash" style="display:none">
+
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem">
+          <button class="adm-btn" style="width:auto;padding:.85rem 1.3rem" onclick="editStart()">✎ Edit on the page</button>
+          <span style="font-size:.78rem;color:var(--dim);line-height:1.4;flex:1;min-width:14rem">See the site as visitors do and click any text to change it. (The tabs below are the same content as lists.)</span>
+        </div>
 
         <!-- Sync banner -->
         <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;background:rgba({{theme.goldRgb}},.07);border:1px solid rgba({{theme.goldRgb}},.25);padding:.8rem 1.1rem;margin-bottom:1.4rem;border-radius:2px">
@@ -1394,7 +1452,7 @@
   // Shows (in the admin) whether the saved hero video actually plays in this browser
   function heroVideoStatus(state) {
     const el = document.getElementById('hero-bg-video');
-    if (state === 'error' && el) el.hidden = true;   // fall back to the hero photo
+    if (state === 'error' && el) { el.hidden = true; const h = document.getElementById('hero'); if (h) h.classList.remove('has-video'); }   // fall back to the hero photo
     const box = document.getElementById('hv-status');
     if (!box) return;
     const msg = {
@@ -1408,24 +1466,76 @@
   function applyHeroVideo() {
     const el = document.getElementById('hero-bg-video');
     if (!el) return;
+    const hero = document.getElementById('hero');
     const url = getHeroVideo();
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     heroVideoStatus(url ? (reduced ? 'reduced' : 'none') : 'none');
     if (url && !reduced) {
       if (el.getAttribute('src') !== url) el.setAttribute('src', url);
       el.hidden = false;
-      el.muted = true; el.defaultMuted = true; el.setAttribute('playsinline', '');
-      const tryPlay = () => { const pr = el.play(); if (pr && pr.catch) pr.catch(() => {}); };
-      tryPlay();
-      // Phones (Low Power Mode, data saver) may block autoplay until the first touch/scroll — retry then.
+      if (hero) hero.classList.add('has-video');
+      el.muted = true; el.defaultMuted = true; el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
+      heroVideoTryPlay();
+      // Phones (iOS Low Power Mode, data saver) block autoplay until a real tap — retry on the first gesture.
+      // (touchend / pointerup / click count as gestures for media; touchstart and scroll do not.)
       if (!window.__heroVideoRetry) {
         window.__heroVideoRetry = true;
-        ['touchstart', 'scroll', 'click'].forEach(ev => window.addEventListener(ev, () => { if (el.paused && !el.hidden && el.getAttribute('src')) tryPlay(); }, { passive: true }));
+        ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, () => {
+          if (el.paused && !el.hidden && el.getAttribute('src')) heroVideoTryPlay();
+        }, { passive: true }));
+        el.addEventListener('playing', () => { const b = document.getElementById('hero-play'); if (b) b.style.display = 'none'; });
       }
     } else {
       el.hidden = true;
+      if (hero) hero.classList.remove('has-video');
+      const b = document.getElementById('hero-play'); if (b) b.style.display = 'none';
       if (el.getAttribute('src')) { el.pause(); el.removeAttribute('src'); el.load(); }
     }
+    heroVideoDebugStart();
+  }
+  function heroVideoTryPlay() {
+    const el = document.getElementById('hero-bg-video');
+    if (!el || el.hidden || !el.getAttribute('src')) return;
+    const pr = el.play();
+    if (pr && pr.catch) pr.catch(err => {
+      // autoplay was blocked: show a small tap-to-play button so the visitor can start it
+      if (err && err.name === 'NotAllowedError') { const b = document.getElementById('hero-play'); if (b && !document.documentElement.classList.contains('editing')) b.style.display = 'block'; }
+    });
+  }
+  function heroVideoPlayTap() {
+    const el = document.getElementById('hero-bg-video');
+    if (!el) return;
+    el.muted = true;
+    const pr = el.play();
+    if (pr && pr.then) pr.then(() => { const b = document.getElementById('hero-play'); if (b) b.style.display = 'none'; }).catch(() => {});
+  }
+
+  // Open the site with #videodebug on the end to see exactly what a phone is doing with the video
+  function heroVideoDebugStart() {
+    if (!/videodebug/.test(location.hash) || window.__hvDebug) return;
+    const el = document.getElementById('hero-bg-video'); if (!el) return;
+    window.__hvDebug = true;
+    const box = document.createElement('pre');
+    box.style.cssText = 'position:fixed;left:6px;right:6px;bottom:6px;z-index:99999;margin:0;padding:8px;background:rgba(0,0,0,.88);color:#9f9;font:11px/1.35 monospace;white-space:pre-wrap;max-height:55vh;overflow:auto;border:1px solid #9f9;border-radius:6px';
+    document.body.appendChild(box);
+    const log = [];
+    const ev = n => log.push(new Date().toISOString().slice(14, 22) + ' ' + n);
+    ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'pause', 'stalled', 'suspend', 'waiting', 'abort', 'emptied', 'error']
+      .forEach(n => el.addEventListener(n, () => ev(n + (n === 'error' && el.error ? ' code=' + el.error.code + ' ' + (el.error.message || '') : ''))));
+    const can = t => { try { return el.canPlayType(t) || 'no'; } catch (e) { return '?'; } };
+    const render = () => {
+      box.textContent = ['VIDEO DEBUG  (tap to hide)', 'src: ' + (el.getAttribute('src') || '(none)'),
+        'hidden=' + el.hidden + ' paused=' + el.paused + ' muted=' + el.muted + ' ended=' + el.ended,
+        'readyState=' + el.readyState + ' networkState=' + el.networkState + ' t=' + el.currentTime.toFixed(1) + ' dur=' + (el.duration || 0).toFixed(1),
+        'size=' + el.videoWidth + 'x' + el.videoHeight + '  buffered=' + (el.buffered.length ? el.buffered.end(el.buffered.length - 1).toFixed(1) + 's' : '0'),
+        'h264=' + can('video/mp4; codecs="avc1.42E01E"') + ' h264-high=' + can('video/mp4; codecs="avc1.640028"') + ' hevc=' + can('video/mp4; codecs="hvc1.1.6.L93.B0"') + ' webm=' + can('video/webm'),
+        'reduceMotion=' + (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) + ' touch=' + ('ontouchstart' in window),
+        'file: ' + (window.__hvHead || 'checking…'), '', ...log.slice(-14)].join('\n');
+    };
+    box.onclick = () => box.remove();
+    const src = el.getAttribute('src');
+    if (src) fetch(src, { method: 'HEAD' }).then(r => { window.__hvHead = r.status + ' ' + r.headers.get('content-type') + ' ' + (r.headers.get('content-length') ? (r.headers.get('content-length') / 1048576).toFixed(1) + ' MB' : '?') + ' ranges=' + r.headers.get('accept-ranges'); }).catch(e => { window.__hvHead = 'HEAD failed: ' + e.message; });
+    setInterval(render, 800); render();
   }
 
   // ── APPLY STORED DATA TO PAGE ──
@@ -1527,6 +1637,7 @@
     return out;
   }
   function applySections() {
+    if (document.documentElement.classList.contains('editing')) { editRefreshSections(); return; }
     const st = getSections();
     SECTION_LIST.forEach(({ id }) => {
       const show = st[id] && (id !== 'videos' || !!extractYouTubeId(getContent().youtube));
@@ -1590,6 +1701,7 @@
     });
   }
   captureTextDefaults();
+  TEXT_EXTRA.forEach(x => { if (!(x.key in TEXT_DEFAULT)) TEXT_DEFAULT[x.key] = x.def; });
   applyTexts();
 
   // ── SHOWS RENDER ──
@@ -1624,7 +1736,7 @@
 
     const delays = ['', ' d1', ' d2', ' d3'];
     if (data.length === 0) {
-      list.innerHTML = '<p style="color:var(--dim);font-family:\'Afacad\',sans-serif;font-size:1.1rem;padding:1rem 0">' + escHtml(T('shows.empty')) + '</p>';
+      list.innerHTML = '<p data-edit="shows.empty" data-label="Message when there are no shows" style="color:var(--dim);font-family:\'Afacad\',sans-serif;font-size:1.1rem;padding:1rem 0">' + escHtml(T('shows.empty')) + '</p>';
       return;
     }
 
@@ -1753,6 +1865,7 @@
       const res = await fetch('/api/data');
       if (!res.ok) return;
       const { shows, content, photos, sections, texts } = await res.json();
+      if (editing) { /* never overwrite what is being typed */ if (content) localStorage.setItem(CONTENT_KEY, JSON.stringify(content)); if (texts) localStorage.setItem(TEXTS_KEY, JSON.stringify(texts)); return; }
       if (shows)   { localStorage.setItem(SHOWS_KEY,   JSON.stringify(shows));   renderShows();  }
       if (content) { localStorage.setItem(CONTENT_KEY, JSON.stringify(content)); applyContent(); }
       if (photos)  { localStorage.setItem(PHOTOS_KEY,  JSON.stringify(photos));  applyPhotos();  }
@@ -1764,6 +1877,11 @@
 
   function admOpen() {
     document.getElementById('admin-overlay').style.display = 'flex';
+    if (_adminPass) {            // already logged in this visit — go straight to the dashboard
+      document.getElementById('adm-login').style.display = 'none';
+      document.getElementById('adm-dash').style.display = 'block';
+      return;
+    }
     document.getElementById('adm-login').style.display = 'block';
     document.getElementById('adm-dash').style.display = 'none';
     document.getElementById('adm-pw').value = '';
@@ -1773,6 +1891,7 @@
   function admClose() {
     document.getElementById('admin-overlay').style.display = 'none';
     history.replaceState(null, '', location.pathname + location.search);
+    if (typeof editing !== 'undefined' && editing) editEnsureVisible();
   }
   async function admLogin() {
     const pwEl  = document.getElementById('adm-pw');
@@ -1969,7 +2088,7 @@
       items.push({ key: el.dataset.edit, group, label: el.dataset.label || el.dataset.edit,
                    def: TEXT_DEFAULT[el.dataset.edit], multi: el.tagName === 'P' || el.hasAttribute('data-rich') });
     });
-    TEXT_EXTRA.forEach(x => items.push({ key: x.key, group: x.group, label: x.label, def: x.def, multi: false }));
+    TEXT_EXTRA.forEach(x => { if (!items.some(i => i.key === x.key)) items.push({ key: x.key, group: x.group, label: x.label, def: x.def, multi: false }); });
     const order = TEXT_GROUPS.map(g => g[1]).concat(['Other']);
     items.sort((a, b) => order.indexOf(a.group) - order.indexOf(b.group));
     let html = '', cur = '';
@@ -2396,6 +2515,7 @@
   // ── INQUIRY FORM ──
   async function submitInquiry(e) {
     e.preventDefault();
+    if (document.documentElement.classList.contains('editing')) return;
     const btn = document.getElementById('inq-btn');
     const msg = document.getElementById('inq-msg');
     const name    = document.getElementById('inq-name').value.trim();
@@ -2500,6 +2620,188 @@
     document.getElementById('pf-hero-bg-url').value = '';
     openCrop('heroBg', url);
   }
+
+  // ── VISUAL EDITOR: click text on the live page to change it ──
+  let editing = false, editDirty = false, editRestore = [];
+  const EDIT_PROMPT_TAGS = ['BUTTON', 'INPUT', 'TEXTAREA'];
+  const EDIT_JUMPS = [   // shortcuts to the admin tabs for things that aren't text
+    { sel: '#hero',            tab: 'photos',  pos: 'bl', label: '✎ Hero photo / video' },
+    { sel: '.portrait-wrap',   tab: 'photos',  pos: 'tl', label: '✎ Change portrait' },
+    { sel: '.shows-poster-col',tab: 'photos',  pos: 'tl', label: '✎ Change poster' },
+    { sel: '.shows-list-col',  tab: 'shows',   pos: 'tr', label: '✎ Edit show dates' },
+    { sel: '.gallery-grid',    tab: 'photos',  pos: 'tr', label: '✎ Edit gallery photos' },
+    { sel: '.music-r',         tab: 'content', pos: 'tr', label: '✎ Streaming links' },
+    { sel: '.vid-info',        tab: 'content', pos: 'tr', label: '✎ Video link' },
+    { sel: '.social-grid',     tab: 'content', pos: 'tr', label: '✎ Social links' },
+  ];
+  const editEls = () => [...document.querySelectorAll('[data-edit],[data-edit-content]')];
+  const editKey = el => el.dataset.edit || el.dataset.editContent;
+
+  function editMarkDirty() {
+    editDirty = true;
+    const st = document.getElementById('edit-status');
+    if (st) st.textContent = 'Unsaved changes — press Save changes';
+  }
+  function editStatus(html) { const st = document.getElementById('edit-status'); if (st) st.innerHTML = html; }
+
+  function editEnsureVisible() {   // un-hide things that are only hidden because they are empty / have no link yet
+    editEls().forEach(el => {
+      for (let n = el; n && n !== document.body; n = n.parentElement) {
+        if (n.style && n.style.display === 'none') n.style.display = '';
+      }
+    });
+    editRefreshSections();
+  }
+
+  function editRefreshSections() {
+    if (!editing) return;
+    const st = getSections();
+    SECTION_LIST.forEach(({ id }) => {
+      const sec = document.getElementById(id); if (!sec) return;
+      const needsLink = id === 'videos' && !extractYouTubeId(getContent().youtube);
+      const on = st[id] && !needsLink;
+      sec.hidden = false;
+      sec.classList.toggle('edit-dimmed', !on);
+      const li = document.querySelector('.nav-links li[data-section="' + id + '"]'); if (li) li.hidden = false;
+      const pill = sec.querySelector(':scope > .edit-pill.sec');
+      if (pill) pill.textContent = needsLink ? '✎ Add a YouTube link to show this' : (st[id] ? '👁 Section is ON — click to hide' : '🚫 Section is OFF — click to show');
+    });
+  }
+
+  function editStart() {
+    if (!_adminPass || editing) return;
+    editing = true; editDirty = false;
+    admClose();
+    const root = document.documentElement;
+    root.classList.add('editing');
+    document.querySelectorAll('.rv').forEach(e => e.classList.add('on'));
+    editEnsureVisible();
+    const canPlain = (() => { try { const d = document.createElement('div'); d.contentEditable = 'plaintext-only'; return d.contentEditable === 'plaintext-only'; } catch (e) { return false; } })();
+    editEls().forEach(el => {
+      el.dataset.ph = el.dataset.label || editKey(el);
+      el.title = (el.dataset.label || '') + (el.hasAttribute('data-rich') ? ' — new line = line break, *stars* = italic' : '');
+      if (EDIT_PROMPT_TAGS.includes(el.tagName)) { el.dataset.editPrompt = '1'; return; }
+      if (el.hasAttribute('data-rich')) { el.textContent = textToMarkup(el); el.style.whiteSpace = 'pre-wrap'; }
+      el.contentEditable = canPlain ? 'plaintext-only' : 'true';
+      el.spellcheck = true;
+    });
+    // shortcut pills: jump to the admin tabs for photos / shows / links
+    EDIT_JUMPS.forEach(j => document.querySelectorAll(j.sel).forEach(box => {
+      if (getComputedStyle(box).position === 'static') { editRestore.push([box, box.style.position]); box.style.position = 'relative'; }
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'edit-pill ' + j.pos; b.textContent = j.label;
+      b.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); editOpenAdmin(j.tab); };
+      box.appendChild(b);
+    }));
+    // per-section on/off pill
+    SECTION_LIST.forEach(({ id }) => {
+      const sec = document.getElementById(id); if (!sec) return;
+      if (getComputedStyle(sec).position === 'static') { editRestore.push([sec, sec.style.position]); sec.style.position = 'relative'; }
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'edit-pill sec';
+      b.onclick = ev => {
+        ev.preventDefault(); ev.stopPropagation();
+        if (id === 'videos' && !extractYouTubeId(getContent().youtube)) return editOpenAdmin('content');
+        sectionToggle(id, !getSections()[id]);
+      };
+      sec.appendChild(b);
+    });
+    editRefreshSections();
+    editStatus('Editing — click any text on the page to change it');
+  }
+
+  // Read typed text straight from the DOM (innerText would return the on-screen UPPERCASE styling)
+  function editReadRich(el) {
+    let out = '';
+    (function walk(node) {
+      node.childNodes.forEach(n => {
+        if (n.nodeType === 3) out += n.nodeValue;
+        else if (n.nodeName === 'BR') out += '\n';
+        else if (n.nodeName === 'DIV' || n.nodeName === 'P') { if (out && !out.endsWith('\n')) out += '\n'; walk(n); }
+        else walk(n);
+      });
+    })(el);
+    return out.replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n[ \t]+/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  function readEditValue(el) {
+    if (EDIT_PROMPT_TAGS.includes(el.tagName)) return el.dataset.editAttr ? (el.getAttribute(el.dataset.editAttr) || '') : el.textContent.trim();
+    if (el.hasAttribute('data-rich')) return editReadRich(el);
+    return (el.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  async function editSave(silent) {
+    if (!editing) return true;
+    const t = getTexts(), c = getContent();
+    editEls().forEach(el => {
+      const v = readEditValue(el);
+      if (el.dataset.editContent) { c[el.dataset.editContent] = v; return; }
+      const k = el.dataset.edit;
+      if (v !== (TEXT_DEFAULT[k] ?? '')) t[k] = v; else delete t[k];
+    });
+    localStorage.setItem(TEXTS_KEY, JSON.stringify(t));
+    localStorage.setItem(CONTENT_KEY, JSON.stringify(c));
+    if (!silent) editStatus('Saving…');
+    const [a, b] = await Promise.all([syncToAPI(TEXTS_KEY, t), syncToAPI(CONTENT_KEY, c)]);
+    const ok = a && b;
+    if (ok) editDirty = false;
+    editStatus(ok ? '<span class="adm-ok">✓ Saved — live on all devices</span>'
+      : '<span class="adm-err">NOT saved to the server — check Redis is connected, then press Save again</span>');
+    if (ok) setTimeout(() => { if (editing && !editDirty) editStatus('Editing — click any text on the page to change it'); }, 3500);
+    return ok;
+  }
+
+  async function editOpenAdmin(tab) {
+    if (editDirty) await editSave(true);     // save typed text first so the admin tabs don't overwrite it
+    admOpen();
+    const btn = document.querySelector('.adm-tab[onclick*="\'' + tab + '\'"]');
+    if (btn) admTab(tab, btn);
+  }
+
+  function editExit() {
+    if (!editing) return;
+    if (editDirty && !confirm('You have unsaved changes. Leave without saving?')) return;
+    editing = false; editDirty = false;
+    document.documentElement.classList.remove('editing');
+    document.querySelectorAll('.edit-pill').forEach(b => b.remove());
+    editRestore.forEach(([el, pos]) => { el.style.position = pos; }); editRestore = [];
+    editEls().forEach(el => {
+      el.removeAttribute('contenteditable'); el.removeAttribute('title'); el.removeAttribute('data-ph'); el.removeAttribute('data-edit-prompt');
+      el.style.whiteSpace = '';
+    });
+    document.querySelectorAll('section.edit-dimmed').forEach(sec => sec.classList.remove('edit-dimmed'));
+    applyContent(); applyTexts(); renderShows(); applySections();
+  }
+
+  function editPrompt(el) {
+    const attr = el.dataset.editAttr;
+    const cur = attr ? (el.getAttribute(attr) || '') : el.textContent.trim();
+    const v = window.prompt((el.dataset.label || 'Text') + ':', cur);
+    if (v === null) return;
+    if (attr) el.setAttribute(attr, v.trim()); else el.textContent = v.trim();
+    editMarkDirty();
+  }
+
+  document.addEventListener('input', e => { if (editing && e.target.closest && e.target.closest('[contenteditable]')) editMarkDirty(); });
+  document.addEventListener('keydown', e => {
+    if (!editing || e.key !== 'Enter') return;
+    const el = e.target.closest && e.target.closest('[contenteditable]');
+    if (el && !el.hasAttribute('data-rich')) { e.preventDefault(); el.blur(); }
+  });
+  document.addEventListener('paste', e => {          // fallback for browsers without plaintext-only editing
+    if (!editing) return;
+    const el = e.target.closest && e.target.closest('[contenteditable]');
+    if (el && el.contentEditable !== 'plaintext-only') {
+      e.preventDefault();
+      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+    }
+  });
+  document.addEventListener('click', e => {            // capture: no navigating away / sending forms while editing
+    if (!editing) return;
+    if (e.target.closest('#edit-bar, .edit-pill, #admin-overlay')) return;
+    const el = e.target.closest('[data-edit],[data-edit-content]');
+    if (el && EDIT_PROMPT_TAGS.includes(el.tagName)) { e.preventDefault(); e.stopPropagation(); editPrompt(el); return; }
+    if (e.target.closest('a[href], button, label')) e.preventDefault();
+  }, true);
+  window.addEventListener('beforeunload', e => { if (editing && editDirty) { e.preventDefault(); e.returnValue = ''; } });
 
   // ── SYNC ALL TO CLOUD ──
   async function syncAllToCloud() {
