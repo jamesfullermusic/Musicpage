@@ -798,7 +798,7 @@
 <!-- HERO -->
 <section id="hero">
   <img id="hero-bg-img" class="hero-bg-img" src="{{hero.background}}" alt="" aria-hidden="true">
-  <video id="hero-bg-video" class="hero-bg-video" muted loop playsinline preload="metadata" aria-hidden="true" hidden onerror="this.hidden=true"></video>
+  <video id="hero-bg-video" class="hero-bg-video" muted loop playsinline preload="metadata" aria-hidden="true" hidden onerror="heroVideoStatus('error')" onplaying="heroVideoStatus('playing')"></video>
   <div class="hero-overlay"></div>
   <div class="hero-eyebrow" id="hero-eyebrow">{{hero.eyebrow}}</div>
   <h1 class="hero-name">
@@ -1186,6 +1186,7 @@
               <input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="heroVideoUpload(event)">
             </label>
             <div id="hv-progress" style="display:none;font-size:.78rem;color:var(--text)"></div>
+            <div id="hv-status" style="font-size:.78rem;line-height:1.5"></div>
             <input class="adm-input" id="pf-hero-video-url" placeholder="Or paste a link — https://… .mp4">
             <div class="adm-row" style="margin-top:0">
               <button class="adm-btn" onclick="heroVideoSet()">Use Video</button>
@@ -1372,11 +1373,26 @@
     const p = getPhotos();
     return typeof p.heroVideo === 'string' ? p.heroVideo : HERO_VIDEO_DEFAULT;
   }
+  // Shows (in the admin) whether the saved hero video actually plays in this browser
+  function heroVideoStatus(state) {
+    const el = document.getElementById('hero-bg-video');
+    if (state === 'error' && el) el.hidden = true;   // fall back to the hero photo
+    const box = document.getElementById('hv-status');
+    if (!box) return;
+    const msg = {
+      none:    '',
+      playing: '<span class="adm-ok">✓ Saved video is playing on this device.</span>',
+      reduced: '<span style="color:var(--dim)">Video is saved but hidden on this device because "reduce motion" is turned on.</span>',
+      error:   '<span class="adm-err">A video is saved but this browser could not play it, so the hero photo shows instead. Use an H.264 .mp4 (not HEVC/H.265 or .mov) under ~10 MB, 1080p or lower.</span>',
+    }[state];
+    box.innerHTML = msg || '';
+  }
   function applyHeroVideo() {
     const el = document.getElementById('hero-bg-video');
     if (!el) return;
     const url = getHeroVideo();
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    heroVideoStatus(url ? (reduced ? 'reduced' : 'none') : 'none');
     if (url && !reduced) {
       if (el.getAttribute('src') !== url) el.setAttribute('src', url);
       el.hidden = false;
