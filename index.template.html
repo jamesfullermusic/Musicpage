@@ -1950,6 +1950,7 @@
   function contentReset() {
     if (!confirm('Reset all text content to the original defaults?')) return;
     localStorage.removeItem(CONTENT_KEY);
+    syncToAPI(CONTENT_KEY, {});
     applyContent();
     contentPopulateForm();
     document.getElementById('cf-msg').innerHTML = '<span class="adm-ok">✓ Reset to defaults.</span>';
