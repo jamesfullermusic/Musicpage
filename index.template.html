@@ -113,6 +113,10 @@
       font-size: 1.2rem; font-weight: 700; white-space: nowrap;
       color: var(--cream); text-decoration: none; letter-spacing: .1em; text-transform: uppercase;
     }
+    .nav-logo { transition: opacity .35s ease, transform .35s ease; }
+    /* while the big hero name is on screen, the bar's name waits; it slides in as the hero name scrolls up under the bar */
+    nav.name-hide .nav-logo { opacity: 0; transform: translateY(14px); pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) { .nav-logo { transition: none; } }
     .nav-logo em { color: var(--gold); font-style: normal; }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
@@ -1529,9 +1533,18 @@
 
   // ── NAV SCROLL ──
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
+  const heroName = document.querySelector('.hero-name');
+  function updateNav() {
     nav.classList.toggle('solid', window.scrollY > 60);
-  }, { passive: true });
+    // show the name in the bar once the big hero name has slid up under it
+    if (heroName) {
+      const hiddenHero = heroName.getClientRects().length === 0;
+      nav.classList.toggle('name-hide', !hiddenHero && heroName.getBoundingClientRect().bottom > nav.offsetHeight + 8);
+    }
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  window.addEventListener('resize', updateNav);
+  updateNav();
 
   // Mobile nav toggle
   function toggleNav() {
