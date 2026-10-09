@@ -72,7 +72,7 @@
       z-index: 3;
       pointer-events: none;
       /* two speckle layers (light + dark specks) so it reads as grain without lifting the blacks */
-      opacity: .18;
+      opacity: .12;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 7 0 0 0 -3.5'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E"),
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -7 0 0 0 3.5'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E");
       background-size: 256px 256px, 256px 256px;
@@ -121,6 +121,40 @@
     /* while the big hero name is on screen, the bar's name waits; it slides in as the hero name scrolls up under the bar */
     nav.name-hide .nav-logo { opacity: 0; transform: translateY(14px); pointer-events: none; }
     @media (prefers-reduced-motion: reduce) { .nav-logo { transition: none; } }
+
+    /* ── ADMIN CONTENT TAB: mirrors the site ── */
+    .mir-jump { position: sticky; top: -1px; z-index: 6; display: flex; flex-wrap: wrap; gap: .35rem; padding: .55rem 0; margin-bottom: .6rem; background: var(--bg-2); }
+    .mir-chip { border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; font: 700 .58rem 'Afacad', sans-serif; letter-spacing: .16em; text-transform: uppercase; padding: .4rem .7rem; border-radius: 99px; }
+    .mir-chip:hover { border-color: var(--gold); color: var(--gold); }
+    .mir-sec { border: 1px solid var(--border); margin: 0 0 1.1rem; padding: 1.1rem 1.2rem .6rem; scroll-margin-top: 5.6rem; }
+    .mir-sec.s-bg  { background: var(--bg); }   .mir-sec.s-bg2 { background: var(--bg-2); }
+    .mir-sec.s-bg3 { background: var(--bg-3); } .mir-sec.s-foot { background: #070503; }
+    .mir-sec.s-hero { background: radial-gradient(ellipse 80% 90% at 50% 100%, rgba(180,80,20,.16), transparent 60%), var(--bg-2); }
+    .mir-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .9rem; padding-bottom: .6rem; border-bottom: 1px dashed var(--border); }
+    .mir-title { font: 700 .62rem 'Afacad', sans-serif; letter-spacing: .38em; text-transform: uppercase; color: var(--gold); }
+    .mir-sw { display: flex; align-items: center; gap: .5rem; font-size: .72rem; color: var(--text); cursor: pointer; }
+    .mir-sw input { width: 1.05rem; height: 1.05rem; accent-color: var(--gold); }
+    .mir-f { display: block; margin: 0 0 .85rem; min-width: 0; }
+    .mir-f > span { display: block; font-size: .66rem; color: var(--dim); margin-bottom: .22rem; letter-spacing: .03em; }
+    .mir-in { width: 100%; background: rgba(0,0,0,.28); border: 1px solid var(--border); color: var(--cream); padding: .55rem .8rem; font-family: 'Afacad', sans-serif; font-size: .95rem; border-radius: 2px; }
+    .mir-in:focus { outline: none; border-color: var(--gold); background: rgba(0,0,0,.4); }
+    .mir-row { display: flex; gap: .7rem; flex-wrap: wrap; }
+    .mir-row > .mir-f { flex: 1 1 8rem; }
+    .mir-in.mk-eyebrow { font-size: .7rem; letter-spacing: .38em; text-transform: uppercase; color: var(--gold); }
+    .mir-in.mk-display { font-size: 2rem; font-weight: 400; text-transform: uppercase; letter-spacing: -.05em; line-height: 1; padding: .4rem .7rem; }
+    .mir-in.mk-heading { font-size: 1.6rem; font-weight: 400; text-transform: uppercase; letter-spacing: -.02em; line-height: 1.08; min-height: 4.4rem; }
+    .mir-in.mk-italic  { font-size: 1.15rem; font-style: italic; }
+    .mir-in.mk-para    { font-size: 1.02rem; line-height: 1.5; color: var(--text); min-height: 4.6rem; }
+    .mir-in.mk-quote   { font-size: .95rem; font-style: italic; font-weight: 700; background: var(--gold); color: var(--bg); border-color: var(--gold); }
+    .mir-in.mk-btn     { font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; text-align: center; }
+    .mir-in.mk-small   { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+    .mir-in.mk-nav     { font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; text-align: center; padding: .5rem .3rem; }
+    .mir-in.mk-logo    { font-size: 1.1rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .mir-in.mk-badge   { font-size: 1.15rem; font-weight: 700; color: var(--gold); }
+    .mir-in.mk-link    { font-size: .9rem; }
+    .mir-note { font-size: .72rem; color: var(--dim); line-height: 1.45; margin: -.3rem 0 .85rem; }
+    .mir-go { display: inline-block; margin: 0 .5rem .6rem 0; }
+    @media (max-width: 920px) { .mir-jump { position: static; } .mir-sec { scroll-margin-top: .5rem; } .mir-in.mk-eyebrow, .mir-in.mk-small, .mir-in.mk-btn, .mir-in.mk-nav, .mir-in.mk-link { font-size: 16px; } .mir-in.mk-display { font-size: 1.6rem; } }
 
     /* ── EDIT MODE (admin: "Edit on the page") ── */
     html.editing nav { transform: none; opacity: 1; pointer-events: auto; }
@@ -344,7 +378,7 @@
     .portrait-wrap { position: relative; }
     .portrait-box {
       width: 100%; aspect-ratio: 3/4;
-      background: linear-gradient(135deg, var(--bg-3) 0%, #1d140d 100%);
+      background: linear-gradient(135deg, var(--bg-3) 0%, #231a0d 100%);
       display: flex; align-items: center; justify-content: center;
       border: 1px solid var(--border);
       position: relative; overflow: hidden;
@@ -506,7 +540,7 @@
 
     /* ── FOOTER ── */
     footer {
-      background: #090604; padding: 2.8rem 4rem;
+      background: #070503; padding: 2.8rem 4rem;
       border-top: 1px solid var(--border);
     }
     .foot-inner {
@@ -1130,7 +1164,6 @@
           <button class="adm-tab active" onclick="admTab('shows',this)">Shows</button>
           <button class="adm-tab" onclick="admTab('content',this)">Content</button>
           <button class="adm-tab" onclick="admTab('photos',this)">Photos</button>
-          <button class="adm-tab" onclick="admTab('texts',this)">All Text</button>
           <button class="adm-tab" onclick="admTab('sections',this)">Sections</button>
         </div>
 
@@ -1161,62 +1194,16 @@
           <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
         </div>
 
-        <!-- ── TAB: CONTENT ── -->
+        <!-- ── TAB: CONTENT (laid out like the site, top to bottom) ── -->
         <div id="adm-panel-content" class="adm-tab-panel">
-          <span class="adm-label">Hero Section</span>
-          <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
-            <input class="adm-input" id="cf-eyebrow"  placeholder="Eyebrow line — e.g. Singer · Songwriter · Guitar">
-            <input class="adm-input" id="cf-tagline"  placeholder='Tagline — e.g. "Songs from the Heart of Home"'>
-            <input class="adm-input" id="cf-genre"    placeholder="Genre line — e.g. Country · Americana · Original Music">
-          </div>
-          <div class="adm-divider"></div>
-          <span class="adm-label">About Section</span>
-          <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
-            <input class="adm-input" id="cf-pullquote" placeholder='Pull quote — e.g. "Real songs for real people."'>
-            <textarea class="adm-input" id="cf-bio1" rows="3" placeholder="Bio paragraph 1"></textarea>
-            <textarea class="adm-input" id="cf-bio2" rows="3" placeholder="Bio paragraph 2"></textarea>
-            <textarea class="adm-input" id="cf-bio3" rows="3" placeholder="Bio paragraph 3"></textarea>
-          </div>
-          <div class="adm-divider"></div>
-          <span class="adm-label">Social Links</span>
-          <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
-            <input class="adm-input" id="cf-soc-fb" placeholder="Facebook URL">
-            <input class="adm-input" id="cf-soc-ig" placeholder="Instagram URL">
-            <input class="adm-input" id="cf-soc-yt" placeholder="YouTube URL">
-            <input class="adm-input" id="cf-soc-sp" placeholder="Spotify URL">
-          </div>
-          <div class="adm-divider"></div>
-          <span class="adm-label">Music &amp; Video</span>
-          <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
-            <input class="adm-input" id="cf-spotify-artist" placeholder="Spotify artist link or ID (shows the player)">
-            <input class="adm-input" id="cf-apple" placeholder="Apple Music link">
-            <input class="adm-input" id="cf-youtube" placeholder="YouTube video link (shows the Video section)">
-          </div>
-          <div class="adm-divider"></div>
-          <span class="adm-label">Inquiry Form</span>
-          <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
-            <p style="font-size:.78rem;color:var(--dim);line-height:1.5;margin:0">Paste your <strong style="color:var(--cream)">Formspree Form ID</strong> below so inquiry submissions email {{contact.email}}. Free setup: go to <strong style="color:var(--cream)">formspree.io</strong> → New Form → set email to {{contact.email}} → copy the ID from the endpoint (the part after /f/).</p>
-            <input class="adm-input" id="cf-formspree" placeholder="Formspree Form ID (e.g. xrgvppwk)">
-            <input class="adm-input" id="cf-email" placeholder="Contact email (used if the form can’t send)">
-          </div>
+          <p style="font-size:.8rem;color:var(--dim);line-height:1.5;margin:0 0 .8rem">This is the site, top to bottom — each block below is a section of the page, in the same order, with the same fonts and colors. Type in any box, then press <strong style="color:var(--cream)">Save All Content</strong>. Prefer to click the real page? Use <strong style="color:var(--cream)">✎ Edit on the page</strong> above.</p>
+          <div class="mir-jump" id="mir-jump"></div>
+          <div id="mir-root"></div>
           <div class="adm-row">
-            <button class="adm-btn" onclick="contentSave()">Save Content</button>
-            <button class="adm-btn ghost" onclick="contentReset()">Reset to Defaults</button>
+            <button class="adm-btn" onclick="mirrorSave()">Save All Content</button>
+            <button class="adm-btn ghost" onclick="mirrorReset()">Reset Content to Defaults</button>
           </div>
           <div class="adm-msg" id="cf-msg"></div>
-          <div class="adm-divider"></div>
-          <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
-        </div>
-
-        <!-- ── TAB: ALL TEXT ── -->
-        <div id="adm-panel-texts" class="adm-tab-panel">
-          <p style="font-size:.78rem;color:var(--dim);line-height:1.5;margin:0 0 .6rem">Every other word on the site. Change anything, then press <strong style="color:var(--cream)">Save All Text</strong>. For headings: a new line = a line break, and <strong style="color:var(--cream)">*words in stars*</strong> show in italics. (The top-banner tagline, bio, and quote are in the Content tab.)</p>
-          <div id="tx-fields"></div>
-          <div class="adm-row">
-            <button class="adm-btn" onclick="textsSave()">Save All Text</button>
-            <button class="adm-btn ghost" onclick="textsReset()">Reset Text to Defaults</button>
-          </div>
-          <div class="adm-msg" id="tx-msg"></div>
           <div class="adm-divider"></div>
           <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
         </div>
@@ -1870,7 +1857,7 @@
       if (content) { localStorage.setItem(CONTENT_KEY, JSON.stringify(content)); applyContent(); }
       if (photos)  { localStorage.setItem(PHOTOS_KEY,  JSON.stringify(photos));  applyPhotos();  }
       if (sections) { localStorage.setItem(SECTIONS_KEY, JSON.stringify(sections)); applySections(); sectionsRenderToggles(); }
-      if (texts)    { localStorage.setItem(TEXTS_KEY, JSON.stringify(texts)); applyTexts(); renderTextEditor(); renderShows(); }
+      if (texts)    { localStorage.setItem(TEXTS_KEY, JSON.stringify(texts)); applyTexts(); renderContentMirror(); renderShows(); }
     } catch(e) { /* use localStorage fallback silently */ }
   }
   loadFromAPI();
@@ -1880,6 +1867,7 @@
     if (_adminPass) {            // already logged in this visit — go straight to the dashboard
       document.getElementById('adm-login').style.display = 'none';
       document.getElementById('adm-dash').style.display = 'block';
+      if (typeof renderContentMirror === 'function' && !mirrorDirty) { renderContentMirror(); renderSectionToggles_(); }
       return;
     }
     document.getElementById('adm-login').style.display = 'block';
@@ -1915,10 +1903,9 @@
       document.getElementById('adm-login').style.display = 'none';
       document.getElementById('adm-dash').style.display = 'block';
       admRenderList();
-      contentPopulateForm();
       photosRenderSlots();
       sectionsRenderToggles();
-      renderTextEditor();
+      mirrorDirty = false; renderContentMirror();
     } else {
       errEl.textContent = msg;
       errEl.style.display = 'block';
@@ -2019,115 +2006,160 @@
     }
   }
 
-  // ── ADMIN: CONTENT ──
-  function contentPopulateForm() {
-    const c = getContent();
-    document.getElementById('cf-eyebrow').value   = c.heroEyebrow;
-    document.getElementById('cf-tagline').value   = c.heroTagline;
-    document.getElementById('cf-genre').value     = c.heroGenre;
-    document.getElementById('cf-pullquote').value = c.pullQuote;
-    document.getElementById('cf-bio1').value      = c.bio1;
-    document.getElementById('cf-bio2').value      = c.bio2;
-    document.getElementById('cf-bio3').value      = c.bio3;
-    document.getElementById('cf-formspree').value = c.formspreeId || '';
-    document.getElementById('cf-soc-fb').value    = c.socialFb || '';
-    document.getElementById('cf-soc-ig').value    = c.socialIg || '';
-    document.getElementById('cf-soc-yt').value    = c.socialYt || '';
-    document.getElementById('cf-soc-sp').value    = c.socialSp || '';
-    document.getElementById('cf-spotify-artist').value = c.spotifyArtist || '';
-    document.getElementById('cf-apple').value     = c.appleMusicUrl || '';
-    document.getElementById('cf-youtube').value   = c.youtube || '';
-    document.getElementById('cf-email').value     = c.contactEmail || '';
-  }
+  // ── ADMIN: CONTENT — laid out like the site, top to bottom ──
+  // s:'t' = text stored in "texts" (defaults read from the page), s:'c' = stored in "content".
+  // kind = how the box looks (mirrors how that text looks on the page).
+  const T_ = (key, label, kind, extra) => Object.assign({ s: 't', key, label, kind }, extra);
+  const C_ = (key, label, kind, extra) => Object.assign({ s: 'c', key, label, kind }, extra);
+  const MIRROR = [
+    { id: 'menu', title: 'Menu bar', bg: 's-bg2', fields: [
+      T_('nav.name', 'Your name (left side of the bar)', 'logo'),
+      { row: [T_('nav.about', 'Link 1', 'nav'), T_('nav.music', 'Link 2', 'nav'), T_('nav.shows', 'Link 3', 'nav'), T_('nav.gallery', 'Link 4', 'nav'), T_('nav.videos', 'Link 5', 'nav'), T_('nav.connect', 'Link 6', 'nav')] },
+    ] },
+    { id: 'hero', title: 'Top banner', bg: 's-hero', go: [['photos', '✎ Hero photo / video…']], fields: [
+      C_('heroEyebrow', 'Small line above the name', 'eyebrow'),
+      { row: [T_('hero.first', 'Big name — first line', 'display'), T_('hero.last', 'Big name — second line (outlined)', 'display')] },
+      C_('heroTagline', 'Tagline', 'italic'),
+      C_('heroGenre', 'Genre line', 'small'),
+      { row: [T_('hero.ctaStream', 'Button 1 (shows when a Spotify link is set)', 'btn'), T_('hero.ctaFollow', 'Button 2 (shows when an Instagram link is set)', 'btn')] },
+      T_('hero.scroll', '“Scroll” hint at the bottom', 'small'),
+    ] },
+    { id: 'about', title: 'About', section: 'about', bg: 's-bg2', go: [['photos', '✎ Change portrait…']], fields: [
+      T_('about.eyebrow', 'Small heading', 'eyebrow'),
+      T_('about.heading', 'Heading', 'heading'),
+      C_('bio1', 'Paragraph 1', 'para'), C_('bio2', 'Paragraph 2', 'para'), C_('bio3', 'Paragraph 3 (leave empty to hide)', 'para'),
+      C_('pullQuote', 'Quote on the photo', 'quote'),
+      { row: [T_('about.stat0v', 'Badge 1 — big text', 'badge'), T_('about.stat1v', 'Badge 2 — big text', 'badge'), T_('about.stat2v', 'Badge 3 — big text', 'badge')] },
+      { row: [T_('about.stat0l', 'Badge 1 — small label', 'small'), T_('about.stat1l', 'Badge 2 — small label', 'small'), T_('about.stat2l', 'Badge 3 — small label', 'small')] },
+    ] },
+    { id: 'music', title: 'Music', section: 'music', bg: 's-bg', fields: [
+      T_('music.eyebrow', 'Small heading', 'eyebrow'),
+      T_('music.heading', 'Heading', 'heading'),
+      C_('spotifyArtist', 'Spotify artist link — shows the player (leave empty to hide)', 'link'),
+      T_('music.platforms', 'Right-hand heading', 'heading'),
+      T_('music.blurb', 'Paragraph', 'para'),
+      C_('appleMusicUrl', 'Apple Music link (adds a button)', 'link'),
+      { note: 'The Spotify and YouTube buttons here use the links in the Connect section below.' },
+    ] },
+    { id: 'shows', title: 'Shows', section: 'shows', bg: 's-bg3', go: [['shows', '✎ Edit show dates…'], ['photos', '✎ Change poster…']], fields: [
+      T_('shows.eyebrow', 'Small heading', 'eyebrow'),
+      T_('shows.heading', 'Heading', 'heading'),
+      T_('shows.note', 'Note under the dates', 'italic'),
+      T_('shows.empty', 'Message when there are no shows', 'para'),
+      T_('shows.tickets', 'Link text on each show', 'small'),
+    ] },
+    { id: 'gallery', title: 'Photos', section: 'gallery', bg: 's-bg3', go: [['photos', '✎ Edit gallery photos…']], fields: [
+      T_('gallery.eyebrow', 'Small heading', 'eyebrow'),
+      T_('gallery.heading', 'Heading', 'heading'),
+    ] },
+    { id: 'videos', title: 'Video', section: 'videos', bg: 's-bg', fields: [
+      T_('video.eyebrow', 'Small heading', 'eyebrow'),
+      C_('youtube', 'YouTube video link — the Video section appears once this is set', 'link'),
+      T_('video.title', 'Video title', 'italic'),
+      T_('video.p1', 'Paragraph 1', 'para'), T_('video.p2', 'Paragraph 2 (leave empty to hide)', 'para'),
+      T_('video.channelBtn', 'Button text (links to your YouTube channel)', 'btn'),
+    ] },
+    { id: 'connect', title: 'Connect & inquiry form', section: 'connect', bg: 's-bg2', fields: [
+      T_('connect.eyebrow', 'Small heading', 'eyebrow'),
+      T_('connect.heading', 'Heading', 'heading'),
+      T_('connect.intro', 'Paragraph', 'para'),
+      { row: [C_('socialFb', 'Facebook link', 'link'), C_('socialIg', 'Instagram link', 'link')] },
+      { row: [C_('socialYt', 'YouTube channel link', 'link'), C_('socialSp', 'Spotify link', 'link')] },
+      T_('connect.formHeading', 'Form heading', 'heading'),
+      T_('connect.formIntro', 'Form paragraph', 'para'),
+      { row: [T_('connect.phName', 'Name box hint', 'small'), T_('connect.phEmail', 'Email box hint', 'small'), T_('connect.phMessage', 'Message box hint', 'small')] },
+      T_('connect.send', 'Send button', 'btn'),
+      { row: [C_('formspreeId', 'Formspree form ID (so inquiries reach your inbox)', 'link'), C_('contactEmail', 'Contact email (backup if the form can’t send)', 'link')] },
+      { note: 'Formspree is free: formspree.io → New Form → set the email → copy the ID after /f/ in the form’s address.' },
+    ] },
+    { id: 'footer', title: 'Footer', bg: 's-foot', fields: [
+      T_('footer.name', 'Name', 'display'),
+      T_('footer.copy', 'Copyright line', 'small'),
+      T_('footer.note', 'Small note under it (leave empty to hide)', 'small'),
+    ] },
+  ];
+  const mirrorFlat = () => MIRROR.flatMap(sec => sec.fields.flatMap(f => f.row ? f.row : (f.key ? [f] : [])));
+  let mirrorDirty = false;
 
-  function contentSave() {
-    const data = {
-      heroEyebrow: document.getElementById('cf-eyebrow').value.trim()   || CONTENT_DEFAULTS.heroEyebrow,
-      heroTagline: document.getElementById('cf-tagline').value.trim()   || CONTENT_DEFAULTS.heroTagline,
-      heroGenre:   document.getElementById('cf-genre').value.trim()     || CONTENT_DEFAULTS.heroGenre,
-      pullQuote:   document.getElementById('cf-pullquote').value.trim() || CONTENT_DEFAULTS.pullQuote,
-      bio1:        document.getElementById('cf-bio1').value.trim()      || CONTENT_DEFAULTS.bio1,
-      bio2:        document.getElementById('cf-bio2').value.trim()      || CONTENT_DEFAULTS.bio2,
-      bio3:        document.getElementById('cf-bio3').value.trim()      || CONTENT_DEFAULTS.bio3,
-      formspreeId: document.getElementById('cf-formspree').value.trim(),
-      socialFb:    document.getElementById('cf-soc-fb').value.trim() || CONTENT_DEFAULTS.socialFb,
-      socialIg:    document.getElementById('cf-soc-ig').value.trim() || CONTENT_DEFAULTS.socialIg,
-      socialYt:    document.getElementById('cf-soc-yt').value.trim() || CONTENT_DEFAULTS.socialYt,
-      socialSp:    document.getElementById('cf-soc-sp').value.trim() || CONTENT_DEFAULTS.socialSp,
-      spotifyArtist: document.getElementById('cf-spotify-artist').value.trim(),
-      appleMusicUrl: document.getElementById('cf-apple').value.trim(),
-      youtube:       document.getElementById('cf-youtube').value.trim(),
-      contactEmail:  document.getElementById('cf-email').value.trim() || CONTENT_DEFAULTS.contactEmail,
-    };
-    localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
-    syncToAPI(CONTENT_KEY, data);
-    applyContent();
-    document.getElementById('cf-msg').innerHTML = '<span class="adm-ok">✓ Content updated on the page.</span>';
-    setTimeout(() => { const m = document.getElementById('cf-msg'); if(m) m.innerHTML=''; }, 3500);
-  }
-
-  function contentReset() {
-    if (!confirm('Reset all text content to the original defaults?')) return;
-    localStorage.removeItem(CONTENT_KEY);
-    syncToAPI(CONTENT_KEY, {});
-    applyContent();
-    contentPopulateForm();
-    document.getElementById('cf-msg').innerHTML = '<span class="adm-ok">✓ Reset to defaults.</span>';
-    setTimeout(() => { const m = document.getElementById('cf-msg'); if(m) m.innerHTML=''; }, 3000);
-  }
-
-  // ── ADMIN: ALL TEXT ──
-  function renderTextEditor() {
-    const box = document.getElementById('tx-fields');
-    if (!box) return;
+  function mirrorDefault(f) { return f.s === 'c' ? (CONTENT_DEFAULTS[f.key] || '') : (TEXT_DEFAULT[f.key] ?? ''); }
+  function mirrorValue(f) {
+    if (f.s === 'c') return getContent()[f.key] ?? '';
     const t = getTexts();
-    const items = [];
-    document.querySelectorAll('[data-edit]').forEach(el => {
-      let group = 'Other';
-      for (const [sel, name] of TEXT_GROUPS) if (el.closest(sel)) { group = name; break; }
-      items.push({ key: el.dataset.edit, group, label: el.dataset.label || el.dataset.edit,
-                   def: TEXT_DEFAULT[el.dataset.edit], multi: el.tagName === 'P' || el.hasAttribute('data-rich') });
-    });
-    TEXT_EXTRA.forEach(x => { if (!items.some(i => i.key === x.key)) items.push({ key: x.key, group: x.group, label: x.label, def: x.def, multi: false }); });
-    const order = TEXT_GROUPS.map(g => g[1]).concat(['Other']);
-    items.sort((a, b) => order.indexOf(a.group) - order.indexOf(b.group));
-    let html = '', cur = '';
-    items.forEach(it => {
-      if (it.group !== cur) { cur = it.group; html += '<span class="adm-label" style="margin-top:1.3rem;display:block">' + escHtml(cur) + '</span>'; }
-      const v = typeof t[it.key] === 'string' ? t[it.key] : (it.def || '');
-      html += '<label style="display:block;margin-bottom:.7rem"><span style="display:block;font-size:.7rem;color:var(--dim);margin-bottom:.25rem">' + escHtml(it.label) + '</span>' +
-        (it.multi ? '<textarea class="adm-input" rows="' + (/\n/.test(v) || v.length > 80 ? 3 : 2) + '"' : '<input class="adm-input"') +
-        ' data-tx="' + escHtml(it.key) + '" data-def="' + escHtml(it.def || '') + '"' + (it.multi ? '>' + escHtml(v) + '</textarea>' : ' value="' + escHtml(v) + '">') + '</label>';
-    });
-    box.innerHTML = html;
+    return typeof t[f.key] === 'string' ? t[f.key] : mirrorDefault(f);
   }
-  function textsSave() {
-    const t = {};
-    document.querySelectorAll('#tx-fields [data-tx]').forEach(f => {
-      const v = f.value.replace(/\r/g, '').trim();
-      if (v !== (f.dataset.def || '')) t[f.dataset.tx] = v;      // only keep what differs from the default
+  function mirrorFieldHtml(f) {
+    const multi = ['heading', 'para'].includes(f.kind);
+    const v = mirrorValue(f);
+    const rich = f.s === 't' && /^(about|music|shows|gallery|connect)\.(heading|platforms|formHeading)$|^footer\.name$/.test(f.key);
+    const attrs = ' data-mf data-s="' + f.s + '" data-k="' + escHtml(f.key) + '" data-def="' + escHtml(mirrorDefault(f)) + '"';
+    const cls = 'adm-input mir-in mk-' + f.kind;
+    const label = escHtml(f.label) + (rich ? ' <em style="opacity:.7">(new line = line break, *stars* = italic)</em>' : '');
+    return '<label class="mir-f"><span>' + label + '</span>' +
+      (multi ? '<textarea class="' + cls + '" rows="' + (f.kind === 'heading' ? 2 : (v.length > 160 ? 4 : 3)) + '"' + attrs + '>' + escHtml(v) + '</textarea>'
+             : '<input class="' + cls + '"' + attrs + ' value="' + escHtml(v) + '">') + '</label>';
+  }
+  function renderContentMirror() {
+    const root = document.getElementById('mir-root');
+    if (!root || mirrorDirty) return;
+    const known = new Set(mirrorFlat().filter(f => f.s === 't').map(f => f.key));
+    const extra = Object.keys(TEXT_DEFAULT).filter(k => !known.has(k));      // any text not placed above still gets a box
+    const secs = extra.length ? MIRROR.concat([{ id: 'other', title: 'More text', bg: 's-bg', fields: extra.map(k => T_(k, k, 'para')) }]) : MIRROR;
+    const st = getSections();
+    document.getElementById('mir-jump').innerHTML = secs.map(sec => '<button type="button" class="mir-chip" onclick="document.getElementById(\'mir-' + sec.id + '\').scrollIntoView({behavior:\'smooth\',block:\'start\'})">' + escHtml(sec.title.split(' & ')[0]) + '</button>').join('');
+    root.innerHTML = secs.map(sec => {
+      const hasLink = sec.id !== 'videos' || !!extractYouTubeId(getContent().youtube);
+      const sw = sec.section ? '<label class="mir-sw"><input type="checkbox" data-sec="' + sec.section + '"' + (st[sec.section] && hasLink ? ' checked' : '') + (hasLink ? '' : ' disabled') + ' onchange="sectionToggle(\'' + sec.section + '\', this.checked)"> ' + (hasLink ? 'Show this section on the site' : 'Hidden until a YouTube link is added') + '</label>' : '';
+      const go = (sec.go || []).map(([tab, label]) => '<button type="button" class="adm-btn ghost sm mir-go" onclick="admGoTab(\'' + tab + '\')">' + label + '</button>').join('');
+      const body = sec.fields.map(f => f.row ? '<div class="mir-row">' + f.row.map(mirrorFieldHtml).join('') + '</div>' : (f.note ? '<p class="mir-note">' + escHtml(f.note) + '</p>' : mirrorFieldHtml(f))).join('');
+      return '<section class="mir-sec ' + sec.bg + '" id="mir-' + sec.id + '"><div class="mir-head"><span class="mir-title">' + escHtml(sec.title) + '</span>' + sw + '</div>' + go + body + '</section>';
+    }).join('');
+    mirrorDirty = false;
+  }
+  function admGoTab(tab) {
+    const btn = document.querySelector('.adm-tab[onclick*="\'' + tab + '\'"]');
+    if (btn) admTab(tab, btn);
+  }
+  function mirrorSyncToggles() {
+    const st = getSections();
+    document.querySelectorAll('#mir-root input[data-sec]').forEach(cb => {
+      const id = cb.dataset.sec;
+      cb.checked = !!st[id] && (id !== 'videos' || !!extractYouTubeId(getContent().youtube));
+    });
+  }
+  document.addEventListener('input', e => { if (e.target.closest && e.target.closest('#mir-root')) mirrorDirty = true; });
+
+  async function mirrorSave() {
+    const t = getTexts(), c = getContent();
+    document.querySelectorAll('#mir-root [data-mf]').forEach(el => {
+      const v = el.value.replace(/\r/g, '').trim();
+      if (el.dataset.s === 'c') { c[el.dataset.k] = (el.dataset.k === 'contactEmail' && !v) ? CONTENT_DEFAULTS.contactEmail : v; }
+      else if (v !== (el.dataset.def || '')) t[el.dataset.k] = v;
+      else delete t[el.dataset.k];
     });
     localStorage.setItem(TEXTS_KEY, JSON.stringify(t));
-    const syncP = syncToAPI(TEXTS_KEY, t);
-    applyTexts(); renderShows();
-    const msg = document.getElementById('tx-msg');
-    syncP.then(ok => {
-      msg.innerHTML = ok ? '<span class="adm-ok">✓ Text saved — live on all devices.</span>'
-        : '<span class="adm-err">Changed here but NOT saved to the server, so other devices won’t see it. Check Redis is connected, then try again.</span>';
-      if (ok) setTimeout(() => { msg.innerHTML = ''; }, 3500);
-    });
+    localStorage.setItem(CONTENT_KEY, JSON.stringify(c));
+    applyContent(); applyTexts(); renderShows();
+    const msg = document.getElementById('cf-msg');
+    msg.innerHTML = '<span style="color:var(--dim)">Saving…</span>';
+    const [a, b] = await Promise.all([syncToAPI(TEXTS_KEY, t), syncToAPI(CONTENT_KEY, c)]);
+    mirrorDirty = !(a && b) ? mirrorDirty : false;
+    msg.innerHTML = (a && b) ? '<span class="adm-ok">✓ Saved — live on all devices.</span>'
+      : '<span class="adm-err">Changed here but NOT saved to the server, so other devices won’t see it. Check Redis is connected, then press Save again.</span>';
+    if (a && b) { setTimeout(() => { msg.innerHTML = ''; }, 3500); mirrorSyncToggles(); }
   }
-  function textsReset() {
-    if (!confirm('Reset all of this text to the original defaults?')) return;
-    localStorage.removeItem(TEXTS_KEY);
-    syncToAPI(TEXTS_KEY, {});
-    applyTexts(); renderShows(); renderTextEditor();
-    const msg = document.getElementById('tx-msg');
-    msg.innerHTML = '<span class="adm-ok">✓ Text reset to defaults.</span>';
+  function mirrorReset() {
+    if (!confirm('Reset ALL text and links on the site to the original defaults?')) return;
+    localStorage.removeItem(CONTENT_KEY); localStorage.removeItem(TEXTS_KEY);
+    syncToAPI(CONTENT_KEY, {}); syncToAPI(TEXTS_KEY, {});
+    applyContent(); applyTexts(); renderShows();
+    mirrorDirty = false; renderContentMirror();
+    const msg = document.getElementById('cf-msg');
+    msg.innerHTML = '<span class="adm-ok">✓ Reset to defaults.</span>';
     setTimeout(() => { msg.innerHTML = ''; }, 3000);
   }
 
   // ── ADMIN: SECTIONS ──
+  function renderSectionToggles_() { if (typeof sectionsRenderToggles === 'function') sectionsRenderToggles(); }
   function sectionsRenderToggles() {
     const box = document.getElementById('sec-toggles');
     if (!box) return;
@@ -2147,6 +2179,7 @@
     st[id] = on;
     localStorage.setItem(SECTIONS_KEY, JSON.stringify(st));
     applySections();
+    mirrorSyncToggles();
     const msg = document.getElementById('sec-msg');
     const ok = await syncToAPI(SECTIONS_KEY, st);
     msg.innerHTML = ok
