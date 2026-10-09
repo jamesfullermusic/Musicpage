@@ -97,20 +97,21 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 500;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1.6rem 4rem;
+      padding: 1.1rem 4rem;
+      /* always-visible, semi-transparent bar so the name + menu stay on screen while scrolling */
+      background: rgba({{theme.bgRgb}},.5);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
       transition: background .4s, padding .3s, border-color .4s;
-      border-bottom: 1px solid transparent;
+      border-bottom: 1px solid var(--border);
     }
     nav.solid {
-      background: rgba({{theme.bgRgb}},.93);
-      backdrop-filter: blur(14px);
-      padding: 1rem 4rem;
-      border-color: var(--border);
+      background: rgba({{theme.bgRgb}},.72);
+      padding: .85rem 4rem;
     }
     .nav-logo {
       font-family: 'Afacad', sans-serif;
-      font-size: 1.15rem; font-weight: 700;
-      color: var(--cream); text-decoration: none; letter-spacing: .06em;
+      font-size: 1.2rem; font-weight: 700; white-space: nowrap;
+      color: var(--cream); text-decoration: none; letter-spacing: .1em; text-transform: uppercase;
     }
     .nav-logo em { color: var(--gold); font-style: normal; }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
@@ -512,8 +513,8 @@
 
     @media (max-width: 920px) {
       section { padding: 5rem 2rem; }
-      nav { padding: 1.2rem 2rem; }
-      nav.solid { padding: .9rem 2rem; }
+      nav { padding: 1rem 2rem; }
+      nav.solid { padding: .8rem 2rem; }
       .nav-links {
         position: fixed; top: 0; right: -100%; height: 100vh; width: 68vw; max-width: 280px;
         background: rgba({{theme.bgRgb}},.97); backdrop-filter: blur(20px);
@@ -541,8 +542,9 @@
 
     @media (max-width: 560px) {
       section { padding: 4rem 1.2rem; }
-      nav { padding: 1rem 1.2rem; }
-      nav.solid { padding: .8rem 1.2rem; }
+      nav { padding: .85rem 1.2rem; }
+      nav.solid { padding: .7rem 1.2rem; }
+      .nav-logo { font-size: 1rem; letter-spacing: .08em; }
       footer { padding: 2.2rem 1.2rem; }
       .hero-ctas { flex-direction: column; align-items: stretch; }
       .btn-gold, .btn-ghost { justify-content: center; min-height: 48px; }
@@ -773,7 +775,7 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#hero" class="nav-logo">{{artist.initials}}<em>·</em></a>
+  <a href="#hero" class="nav-logo">{{artist.name}}</a>
   <ul class="nav-links" id="navLinks">
     <li data-section="about"><a href="#about">About</a></li>
     <li data-section="music"><a href="#music">Music</a></li>
