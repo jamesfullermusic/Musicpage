@@ -781,14 +781,14 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#hero" class="nav-logo">{{artist.name}}</a>
+  <a href="#hero" class="nav-logo" data-edit="nav.name" data-label="Name in the menu bar">{{artist.name}}</a>
   <ul class="nav-links" id="navLinks">
-    <li data-section="about"><a href="#about">About</a></li>
-    <li data-section="music"><a href="#music">Music</a></li>
-    <li data-section="shows"><a href="#shows">Shows</a></li>
-    <li data-section="gallery"><a href="#gallery">Photos</a></li>
-    {{#if video.youtubeId}}<li data-section="videos"><a href="#videos">Videos</a></li>{{/if}}
-    <li data-section="connect"><a href="#connect">Connect</a></li>
+    <li data-section="about"><a href="#about" data-edit="nav.about" data-label="Menu: About">About</a></li>
+    <li data-section="music"><a href="#music" data-edit="nav.music" data-label="Menu: Music">Music</a></li>
+    <li data-section="shows"><a href="#shows" data-edit="nav.shows" data-label="Menu: Shows">Shows</a></li>
+    <li data-section="gallery"><a href="#gallery" data-edit="nav.gallery" data-label="Menu: Photos">Photos</a></li>
+    <li data-section="videos"><a href="#videos" data-edit="nav.videos" data-label="Menu: Videos">Videos</a></li>
+    <li data-section="connect"><a href="#connect" data-edit="nav.connect" data-label="Menu: Connect">Connect</a></li>
   </ul>
   <div class="nav-burger" id="burger" onclick="toggleNav()">
     <span></span><span></span><span></span>
@@ -798,27 +798,27 @@
 <!-- HERO -->
 <section id="hero">
   <img id="hero-bg-img" class="hero-bg-img" src="{{hero.background}}" alt="" aria-hidden="true">
-  <video id="hero-bg-video" class="hero-bg-video" muted loop playsinline preload="metadata" aria-hidden="true" hidden onerror="this.hidden=true"></video>
+  <video id="hero-bg-video" class="hero-bg-video" muted loop playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture aria-hidden="true" hidden onerror="heroVideoStatus('error')" onplaying="heroVideoStatus('playing')"></video>
   <div class="hero-overlay"></div>
   <div class="hero-eyebrow" id="hero-eyebrow">{{hero.eyebrow}}</div>
   <h1 class="hero-name">
-    <span class="hero-name-a">{{artist.firstName}}</span>
-    {{#if artist.lastName}}<span class="hero-name-b">{{artist.lastName}}</span>{{/if}}
+    <span class="hero-name-a" data-edit="hero.first" data-label="Big name — first line">{{artist.firstName}}</span>
+    <span class="hero-name-b" data-edit="hero.last" data-label="Big name — second line (outlined)">{{artist.lastName}}</span>
   </h1>
   <p class="hero-tagline" id="hero-tagline">{{hero.tagline}}</p>
   <div class="hero-rule"></div>
   <div class="hero-genre" id="hero-genre">{{hero.genre}}</div>
   <div class="hero-ctas">
-    {{#if social.spotify}}<a href="{{social.spotify}}" target="_blank" rel="noopener" class="btn-gold">
+    <a id="hero-cta-sp" href="{{social.spotify}}" target="_blank" rel="noopener" class="btn-gold" style="display:none">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-      Stream on Spotify
-    </a>{{/if}}
-    {{#if social.instagram}}<a href="{{social.instagram}}" target="_blank" rel="noopener" class="btn-ghost">
-      Follow Along
-    </a>{{/if}}
+      <span data-edit="hero.ctaStream" data-label="Button: Stream">Stream on Spotify</span>
+    </a>
+    <a id="hero-cta-ig" href="{{social.instagram}}" target="_blank" rel="noopener" class="btn-ghost" style="display:none">
+      <span data-edit="hero.ctaFollow" data-label="Button: Follow">Follow Along</span>
+    </a>
   </div>
   <div class="hero-scroll">
-    <span>Scroll</span>
+    <span data-edit="hero.scroll" data-label="“Scroll” hint">Scroll</span>
     <div class="scroll-bar"></div>
   </div>
 </section>
@@ -838,16 +838,16 @@
       </div>
 
       <div>
-        <span class="eyebrow rv">About {{artist.shortName}}</span>
-        <h2 class="sh rv d1">{{about.headingTop}}<br><em>{{about.headingEm}}</em></h2>
+        <span class="eyebrow rv" data-edit="about.eyebrow" data-label="Small heading">About {{artist.shortName}}</span>
+        <h2 class="sh rv d1" data-edit="about.heading" data-rich data-label="Heading">{{about.headingTop}}<br><em>{{about.headingEm}}</em></h2>
         <div class="rule rv d2"></div>
         <p class="body-serif rv d2" id="about-bio-1">{{about.bios.0}}</p>
         <p class="body-serif rv d3" id="about-bio-2">{{about.bios.1}}</p>
         <p class="body-serif rv d4" id="about-bio-3">{{about.bios.2}}</p>
         <div class="about-stats rv d4">
-          <div><span class="stat-n">{{about.stats.0.value}}</span><span class="stat-l">{{about.stats.0.label}}</span></div>
-          <div><span class="stat-n">{{about.stats.1.value}}</span><span class="stat-l">{{about.stats.1.label}}</span></div>
-          <div><span class="stat-n">{{about.stats.2.value}}</span><span class="stat-l">{{about.stats.2.label}}</span></div>
+          <div><span class="stat-n" data-edit="about.stat0v" data-label="Badge 1 — big text">{{about.stats.0.value}}</span><span class="stat-l" data-edit="about.stat0l" data-label="Badge 1 — small label">{{about.stats.0.label}}</span></div>
+          <div><span class="stat-n" data-edit="about.stat1v" data-label="Badge 2 — big text">{{about.stats.1.value}}</span><span class="stat-l" data-edit="about.stat1l" data-label="Badge 2 — small label">{{about.stats.1.label}}</span></div>
+          <div><span class="stat-n" data-edit="about.stat2v" data-label="Badge 3 — big text">{{about.stats.2.value}}</span><span class="stat-l" data-edit="about.stat2l" data-label="Badge 3 — small label">{{about.stats.2.label}}</span></div>
         </div>
       </div>
 
@@ -861,38 +861,31 @@
     <div class="music-grid">
 
       <div class="rv">
-        <span class="eyebrow">Stream</span>
-        <h2 class="sh">Listen to<br><em>the Music</em></h2>
+        <span class="eyebrow" data-edit="music.eyebrow" data-label="Small heading">Stream</span>
+        <h2 class="sh" data-edit="music.heading" data-rich data-label="Heading">Listen to<br><em>the Music</em></h2>
         <div class="rule"></div>
-        {{#if music.spotifyArtistId}}<div class="spotify-wrap">
-          <iframe
-            src="https://open.spotify.com/embed/artist/{{music.spotifyArtistId}}?utm_source=generator&theme=0"
-            width="100%" height="380"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy">
-          </iframe>
-        </div>{{/if}}
+        <div class="spotify-wrap" id="spotify-wrap" style="display:none"></div>
       </div>
 
       <div class="music-r rv d2">
-        <h3>Available on<br>all platforms</h3>
-        <p class="body-serif">{{music.blurb}}</p>
+        <h3 data-edit="music.platforms" data-rich data-label="Right-hand heading">Available on<br>all platforms</h3>
+        <p class="body-serif" data-edit="music.blurb" data-label="Paragraph">{{music.blurb}}</p>
         <div class="plat-list">
-          {{#if social.spotify}}<a href="{{social.spotify}}" target="_blank" rel="noopener" class="plat-a">
+          <a id="plat-sp" href="{{social.spotify}}" target="_blank" rel="noopener" class="plat-a" style="display:none">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
             Spotify
             <span class="arr">→</span>
-          </a>{{/if}}
-          {{#if music.appleMusicUrl}}<a href="{{music.appleMusicUrl}}" target="_blank" rel="noopener" class="plat-a">
+          </a>
+          <a id="plat-am" href="{{music.appleMusicUrl}}" target="_blank" rel="noopener" class="plat-a" style="display:none">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             Apple Music
             <span class="arr">→</span>
-          </a>{{/if}}
-          {{#if social.youtube}}<a href="{{social.youtube}}" target="_blank" rel="noopener" class="plat-a">
+          </a>
+          <a id="plat-yt" href="{{social.youtube}}" target="_blank" rel="noopener" class="plat-a" style="display:none">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             YouTube
             <span class="arr">→</span>
-          </a>{{/if}}
+          </a>
         </div>
       </div>
 
@@ -904,12 +897,12 @@
 <section id="shows">
   <div class="sec-line"></div>
   <div class="wrap">
-    <span class="eyebrow rv">Live Dates</span>
-    <h2 class="sh rv d1">Catch {{artist.shortName}}<br><em>Live</em></h2>
+    <span class="eyebrow rv" data-edit="shows.eyebrow" data-label="Small heading">Live Dates</span>
+    <h2 class="sh rv d1" data-edit="shows.heading" data-rich data-label="Heading">Catch {{artist.shortName}}<br><em>Live</em></h2>
     <div class="shows-layout">
       <div class="shows-list-col">
         <div class="shows-list" id="shows-list"></div>
-        <p class="shows-note rv">{{shows.note}}</p>
+        <p class="shows-note rv" data-edit="shows.note" data-label="Note under the dates">{{shows.note}}</p>
       </div>
       <div class="shows-poster-col rv d2">
         <img id="tour-poster-img" src="{{shows.poster}}" alt="{{shows.posterAlt}}" onclick="openPosterLightbox()">
@@ -922,40 +915,38 @@
 <section id="gallery">
   <div class="sec-line"></div>
   <div class="wrap">
-    <span class="eyebrow rv">Photos</span>
-    <h2 class="sh rv d1">On Stage &amp;<br><em>In the Moment</em></h2>
+    <span class="eyebrow rv" data-edit="gallery.eyebrow" data-label="Small heading">Photos</span>
+    <h2 class="sh rv d1" data-edit="gallery.heading" data-rich data-label="Heading">On Stage &amp;<br><em>In the Moment</em></h2>
     <div class="rule rv d2"></div>
     <div class="gallery-grid" id="gallery-grid"></div>
   </div>
 </section>
 
-{{#if video.youtubeId}}<!-- VIDEOS -->
+<!-- VIDEOS -->
 <section id="videos">
   <div class="wrap">
     <div class="vid-grid">
       <div class="rv">
         <div class="yt-wrap">
-          <iframe
-            src="https://www.youtube.com/embed/{{video.youtubeId}}"
-            title="{{video.title}} — {{artist.name}}"
+          <iframe id="vid-iframe" title="{{video.title}} — {{artist.name}}"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
         </div>
       </div>
       <div class="vid-info rv d2">
-        <span class="eyebrow">Featured Video</span>
-        <h3>{{video.title}}</h3>
+        <span class="eyebrow" data-edit="video.eyebrow" data-label="Small heading">Featured Video</span>
+        <h3 data-edit="video.title" data-label="Video title">{{video.title}}</h3>
         <div class="rule"></div>
-        <p class="body-serif">{{video.paragraphs.0}}</p>
-        {{#if video.paragraphs.1}}<p class="body-serif">{{video.paragraphs.1}}</p>{{/if}}
-        {{#if social.youtube}}<a href="{{social.youtube}}" target="_blank" rel="noopener" class="btn-ghost">
-          View YouTube Channel →
-        </a>{{/if}}
+        <p class="body-serif" data-edit="video.p1" data-label="Paragraph 1">{{video.paragraphs.0}}</p>
+        <p class="body-serif" data-edit="video.p2" data-label="Paragraph 2">{{video.paragraphs.1}}</p>
+        <a id="vid-yt-link" href="{{social.youtube}}" target="_blank" rel="noopener" class="btn-ghost" style="display:none">
+          <span data-edit="video.channelBtn" data-label="Button: channel link">View YouTube Channel →</span>
+        </a>
       </div>
     </div>
   </div>
-</section>{{/if}}
+</section>
 
 <!-- CONNECT -->
 <section id="connect">
@@ -964,10 +955,10 @@
     <div class="connect-grid">
 
       <div>
-        <span class="eyebrow rv">Follow Along</span>
-        <h2 class="sh rv d1">Stay<br><em>Connected</em></h2>
+        <span class="eyebrow rv" data-edit="connect.eyebrow" data-label="Small heading">Follow Along</span>
+        <h2 class="sh rv d1" data-edit="connect.heading" data-rich data-label="Heading">Stay<br><em>Connected</em></h2>
         <div class="rule rv d2"></div>
-        <p class="body-serif rv d2">Live clips, behind-the-scenes moments, new songs — follow {{artist.shortName}} to catch it all as it happens.</p>
+        <p class="body-serif rv d2" data-edit="connect.intro" data-label="Paragraph">Live clips, behind-the-scenes moments, new songs — follow {{artist.shortName}} to catch it all as it happens.</p>
         <div class="social-grid">
           <a id="soc-fb" href="{{social.facebook}}" target="_blank" rel="noopener" class="soc-a rv d1">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -989,11 +980,11 @@
       </div>
 
       <div class="email-col rv d2">
-        <h3>Send an<br><em>Inquiry</em></h3>
-        <p class="body-serif">Booking, licensing, media, or just want to say hey — fill this out and {{artist.shortName}} will get back to you.</p>
+        <h3 data-edit="connect.formHeading" data-rich data-label="Form heading">Send an<br><em>Inquiry</em></h3>
+        <p class="body-serif" data-edit="connect.formIntro" data-label="Form paragraph">Booking, licensing, media, or just want to say hey — fill this out and {{artist.shortName}} will get back to you.</p>
         <form class="form-stack" id="inquiry-form" onsubmit="submitInquiry(event)">
-          <input type="text"  id="inq-name"    name="name"    placeholder="Your Name *"  required>
-          <input type="email" id="inq-email"   name="email"   placeholder="Your Email *" required>
+          <input type="text"  id="inq-name"    name="name"    placeholder="Your Name *" data-edit="connect.phName" data-edit-attr="placeholder" data-label="Form box: name" required>
+          <input type="email" id="inq-email"   name="email"   placeholder="Your Email *" data-edit="connect.phEmail" data-edit-attr="placeholder" data-label="Form box: email" required>
           <select id="inq-subject" name="subject">
             <option value="">Subject (optional)</option>
             <option value="Booking Inquiry">Booking Inquiry</option>
@@ -1001,8 +992,8 @@
             <option value="General">General</option>
             <option value="Other">Other</option>
           </select>
-          <textarea id="inq-message" name="message" placeholder="Your Message *" required></textarea>
-          <button type="submit" id="inq-btn">Send Inquiry</button>
+          <textarea id="inq-message" name="message" placeholder="Your Message *" data-edit="connect.phMessage" data-edit-attr="placeholder" data-label="Form box: message" required></textarea>
+          <button type="submit" id="inq-btn" data-edit="connect.send" data-label="Form button">Send Inquiry</button>
         </form>
         <div class="inq-status" id="inq-msg"></div>
       </div>
@@ -1014,10 +1005,10 @@
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
-    <div class="foot-logo">{{artist.firstName}} <em>{{artist.lastName}}</em></div>
+    <div class="foot-logo" data-edit="footer.name" data-rich data-label="Name">{{artist.firstName}} <em>{{artist.lastName}}</em></div>
     <div class="foot-copy">
-      &copy; {{year}} {{artist.name}} &middot; All Rights Reserved<br>
-      {{#if site.footerNote}}<span style="font-size:.6rem;opacity:.55;">{{site.footerNote}}</span>{{/if}}
+      <span data-edit="footer.copy" data-label="Copyright line">&copy; {{year}} {{artist.name}} &middot; All Rights Reserved</span><br>
+      <span data-edit="footer.note" data-label="Small note under it (leave empty to hide)" style="font-size:.6rem;opacity:.55;">{{site.footerNote}}</span>
     </div>
     <div class="foot-socials">
       <a id="foot-fb" href="{{social.facebook}}" target="_blank" rel="noopener" title="Facebook">
@@ -1081,6 +1072,7 @@
           <button class="adm-tab active" onclick="admTab('shows',this)">Shows</button>
           <button class="adm-tab" onclick="admTab('content',this)">Content</button>
           <button class="adm-tab" onclick="admTab('photos',this)">Photos</button>
+          <button class="adm-tab" onclick="admTab('texts',this)">All Text</button>
           <button class="adm-tab" onclick="admTab('sections',this)">Sections</button>
         </div>
 
@@ -1136,16 +1128,37 @@
             <input class="adm-input" id="cf-soc-sp" placeholder="Spotify URL">
           </div>
           <div class="adm-divider"></div>
+          <span class="adm-label">Music &amp; Video</span>
+          <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
+            <input class="adm-input" id="cf-spotify-artist" placeholder="Spotify artist link or ID (shows the player)">
+            <input class="adm-input" id="cf-apple" placeholder="Apple Music link">
+            <input class="adm-input" id="cf-youtube" placeholder="YouTube video link (shows the Video section)">
+          </div>
+          <div class="adm-divider"></div>
           <span class="adm-label">Inquiry Form</span>
           <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:.9rem">
             <p style="font-size:.78rem;color:var(--dim);line-height:1.5;margin:0">Paste your <strong style="color:var(--cream)">Formspree Form ID</strong> below so inquiry submissions email {{contact.email}}. Free setup: go to <strong style="color:var(--cream)">formspree.io</strong> → New Form → set email to {{contact.email}} → copy the ID from the endpoint (the part after /f/).</p>
             <input class="adm-input" id="cf-formspree" placeholder="Formspree Form ID (e.g. xrgvppwk)">
+            <input class="adm-input" id="cf-email" placeholder="Contact email (used if the form can’t send)">
           </div>
           <div class="adm-row">
             <button class="adm-btn" onclick="contentSave()">Save Content</button>
             <button class="adm-btn ghost" onclick="contentReset()">Reset to Defaults</button>
           </div>
           <div class="adm-msg" id="cf-msg"></div>
+          <div class="adm-divider"></div>
+          <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
+        </div>
+
+        <!-- ── TAB: ALL TEXT ── -->
+        <div id="adm-panel-texts" class="adm-tab-panel">
+          <p style="font-size:.78rem;color:var(--dim);line-height:1.5;margin:0 0 .6rem">Every other word on the site. Change anything, then press <strong style="color:var(--cream)">Save All Text</strong>. For headings: a new line = a line break, and <strong style="color:var(--cream)">*words in stars*</strong> show in italics. (The top-banner tagline, bio, and quote are in the Content tab.)</p>
+          <div id="tx-fields"></div>
+          <div class="adm-row">
+            <button class="adm-btn" onclick="textsSave()">Save All Text</button>
+            <button class="adm-btn ghost" onclick="textsReset()">Reset Text to Defaults</button>
+          </div>
+          <div class="adm-msg" id="tx-msg"></div>
           <div class="adm-divider"></div>
           <button class="adm-btn ghost" onclick="admClose()">Close Admin</button>
         </div>
@@ -1186,6 +1199,7 @@
               <input type="file" accept="video/mp4,video/webm,video/quicktime" onchange="heroVideoUpload(event)">
             </label>
             <div id="hv-progress" style="display:none;font-size:.78rem;color:var(--text)"></div>
+            <div id="hv-status" style="font-size:.78rem;line-height:1.5"></div>
             <input class="adm-input" id="pf-hero-video-url" placeholder="Or paste a link — https://… .mp4">
             <div class="adm-row" style="margin-top:0">
               <button class="adm-btn" onclick="heroVideoSet()">Use Video</button>
@@ -1295,6 +1309,10 @@
     socialIg: BAND.social.instagram || '',
     socialYt: BAND.social.youtube   || '',
     socialSp: BAND.social.spotify   || '',
+    spotifyArtist: (BAND.music && BAND.music.spotifyArtistId) || '',
+    appleMusicUrl: (BAND.music && BAND.music.appleMusicUrl) || '',
+    youtube:       (BAND.video && BAND.video.youtubeId) || '',
+    contactEmail:  (BAND.contact && BAND.contact.email) || '',
   };
 
   // ── PHOTO DEFAULTS ──
@@ -1318,6 +1336,7 @@
   const CONTENT_KEY = SLUG + '_content';
   const PHOTOS_KEY  = SLUG + '_photos';
   const SECTIONS_KEY = SLUG + '_sections';
+  const TEXTS_KEY    = SLUG + '_texts';
 
   function getShows() {
     try { const s = localStorage.getItem(SHOWS_KEY); if (s) return JSON.parse(s); } catch(e) {}
@@ -1372,15 +1391,37 @@
     const p = getPhotos();
     return typeof p.heroVideo === 'string' ? p.heroVideo : HERO_VIDEO_DEFAULT;
   }
+  // Shows (in the admin) whether the saved hero video actually plays in this browser
+  function heroVideoStatus(state) {
+    const el = document.getElementById('hero-bg-video');
+    if (state === 'error' && el) el.hidden = true;   // fall back to the hero photo
+    const box = document.getElementById('hv-status');
+    if (!box) return;
+    const msg = {
+      none:    '',
+      playing: '<span class="adm-ok">✓ Saved video is playing on this device.</span>',
+      reduced: '<span style="color:var(--dim)">Video is saved but hidden on this device because "reduce motion" is turned on.</span>',
+      error:   '<span class="adm-err">A video is saved but this browser could not play it, so the hero photo shows instead. Use an H.264 .mp4 (not HEVC/H.265 or .mov) under ~10 MB, 1080p or lower.</span>',
+    }[state];
+    box.innerHTML = msg || '';
+  }
   function applyHeroVideo() {
     const el = document.getElementById('hero-bg-video');
     if (!el) return;
     const url = getHeroVideo();
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    heroVideoStatus(url ? (reduced ? 'reduced' : 'none') : 'none');
     if (url && !reduced) {
       if (el.getAttribute('src') !== url) el.setAttribute('src', url);
       el.hidden = false;
-      const pr = el.play(); if (pr && pr.catch) pr.catch(() => {});
+      el.muted = true; el.defaultMuted = true; el.setAttribute('playsinline', '');
+      const tryPlay = () => { const pr = el.play(); if (pr && pr.catch) pr.catch(() => {}); };
+      tryPlay();
+      // Phones (Low Power Mode, data saver) may block autoplay until the first touch/scroll — retry then.
+      if (!window.__heroVideoRetry) {
+        window.__heroVideoRetry = true;
+        ['touchstart', 'scroll', 'click'].forEach(ev => window.addEventListener(ev, () => { if (el.paused && !el.hidden && el.getAttribute('src')) tryPlay(); }, { passive: true }));
+      }
     } else {
       el.hidden = true;
       if (el.getAttribute('src')) { el.pause(); el.removeAttribute('src'); el.load(); }
@@ -1405,6 +1446,38 @@
     setHref('soc-ig',  c.socialIg); setHref('foot-ig', c.socialIg);
     setHref('soc-yt',  c.socialYt); setHref('foot-yt', c.socialYt);
     setHref('soc-sp',  c.socialSp); setHref('foot-sp', c.socialSp);
+    // streaming / video links (always in the page; hidden until a link is set)
+    setHref('hero-cta-sp', c.socialSp); setHref('hero-cta-ig', c.socialIg);
+    setHref('plat-sp', c.socialSp); setHref('plat-yt', c.socialYt); setHref('plat-am', c.appleMusicUrl);
+    setHref('vid-yt-link', c.socialYt);
+    const spId = extractSpotifyId(c.spotifyArtist);
+    const wrap = document.getElementById('spotify-wrap');
+    if (wrap) {
+      if (spId) {
+        if (wrap.dataset.id !== spId) {
+          wrap.dataset.id = spId;
+          wrap.innerHTML = '<iframe src="https://open.spotify.com/embed/artist/' + spId + '?utm_source=generator&theme=0" width="100%" height="380" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+        }
+        wrap.style.display = '';
+      } else { wrap.dataset.id = ''; wrap.innerHTML = ''; wrap.style.display = 'none'; }
+    }
+    const ytId = extractYouTubeId(c.youtube);
+    const vf = document.getElementById('vid-iframe');
+    if (vf) {
+      const want = ytId ? 'https://www.youtube.com/embed/' + ytId : '';
+      if ((vf.getAttribute('src') || '') !== want) { if (want) vf.setAttribute('src', want); else vf.removeAttribute('src'); }
+    }
+    if (window.__sectionsReady) applySections();
+  }
+  function extractSpotifyId(v) {
+    v = String(v || '').trim(); if (!v) return '';
+    const m = v.match(/artist\/([A-Za-z0-9]+)/); if (m) return m[1];
+    return /^[A-Za-z0-9]{10,}$/.test(v) ? v : '';
+  }
+  function extractYouTubeId(v) {
+    v = String(v || '').trim(); if (!v) return '';
+    const m = v.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/); if (m) return m[1];
+    return /^[\w-]{11}$/.test(v) ? v : '';
   }
   function applyPhotos() {
     const p = getPhotos();
@@ -1456,13 +1529,68 @@
   function applySections() {
     const st = getSections();
     SECTION_LIST.forEach(({ id }) => {
+      const show = st[id] && (id !== 'videos' || !!extractYouTubeId(getContent().youtube));
       const sec = document.getElementById(id);
-      if (sec) sec.hidden = !st[id];
+      if (sec) sec.hidden = !show;
       const li = document.querySelector('.nav-links li[data-section="' + id + '"]');
-      if (li) li.hidden = !st[id];
+      if (li) li.hidden = !show;
     });
   }
+  window.__sectionsReady = true;
   applySections();
+
+  // ── EDITABLE TEXT ──
+  // Any element with data-edit="key" is editable from Admin → All Text. Defaults are read from the
+  // page as built, so nothing is duplicated. Headings use a tiny markup: new line = <br>, *x* = italic.
+  const TEXT_GROUPS = [['nav','Menu'],['#hero','Top Banner'],['#about','About'],['#music','Music'],['#shows','Shows'],['#gallery','Photos'],['#videos','Video'],['#connect','Connect & Inquiry Form'],['footer','Footer']];
+  const TEXT_EXTRA = [   // text that is built by script, not in the page markup
+    { key: 'shows.empty',   group: 'Shows', label: 'Message when there are no shows', def: 'No shows scheduled right now — check back soon.' },
+    { key: 'shows.tickets', group: 'Shows', label: 'Link text on each show', def: 'Tickets / Info →' },
+  ];
+  const TEXT_DEFAULT = {};
+  function textToMarkup(el) {
+    let out = '';
+    el.childNodes.forEach(n => {
+      if (n.nodeType === 3) out += n.nodeValue;
+      else if (n.nodeName === 'BR') out += '\n';
+      else if (n.nodeName === 'EM') out += '*' + n.textContent + '*';
+      else out += n.textContent;
+    });
+    return out.replace(/[ \t]+\n/g, '\n').replace(/\n[ \t]+/g, '\n').trim();
+  }
+  function markupToHtml(t) {
+    return escHtml(t).replace(/\*([^*\n]+)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
+  }
+  function getTexts() {
+    try { const s = localStorage.getItem(TEXTS_KEY); if (s) return JSON.parse(s) || {}; } catch(e) {}
+    return {};
+  }
+  function T(key) {                       // for script-built text
+    const x = TEXT_EXTRA.find(e => e.key === key);
+    const t = getTexts();
+    return typeof t[key] === 'string' ? t[key] : (x ? x.def : '');
+  }
+  function captureTextDefaults() {
+    document.querySelectorAll('[data-edit]').forEach(el => {
+      const k = el.dataset.edit;
+      if (k in TEXT_DEFAULT) return;
+      TEXT_DEFAULT[k] = el.dataset.editAttr ? (el.getAttribute(el.dataset.editAttr) || '')
+        : (el.hasAttribute('data-rich') ? textToMarkup(el) : el.textContent.trim());
+    });
+  }
+  function applyTexts() {
+    const t = getTexts();
+    document.querySelectorAll('[data-edit]').forEach(el => {
+      const k = el.dataset.edit;
+      const v = typeof t[k] === 'string' ? t[k] : TEXT_DEFAULT[k];
+      if (v === undefined) return;
+      if (el.dataset.editAttr) { el.setAttribute(el.dataset.editAttr, v); return; }
+      if (el.hasAttribute('data-rich')) el.innerHTML = markupToHtml(v); else el.textContent = v;
+      el.style.display = v === '' ? 'none' : '';
+    });
+  }
+  captureTextDefaults();
+  applyTexts();
 
   // ── SHOWS RENDER ──
   const MONTH_MAP = {
@@ -1496,7 +1624,7 @@
 
     const delays = ['', ' d1', ' d2', ' d3'];
     if (data.length === 0) {
-      list.innerHTML = '<p style="color:var(--dim);font-family:\'Afacad\',sans-serif;font-size:1.1rem;padding:1rem 0">No shows scheduled right now — check back soon.</p>';
+      list.innerHTML = '<p style="color:var(--dim);font-family:\'Afacad\',sans-serif;font-size:1.1rem;padding:1rem 0">' + escHtml(T('shows.empty')) + '</p>';
       return;
     }
 
@@ -1510,7 +1638,7 @@
         <div class="show-info">
           <h3>${escHtml(s.venue)}</h3>
           <span>${escHtml(s.location)}</span>
-          ${s.url ? `<a href="${escHtml(s.url)}" target="_blank" rel="noopener" class="show-link">Tickets / Info →</a>` : ''}
+          ${s.url ? `<a href="${escHtml(s.url)}" target="_blank" rel="noopener" class="show-link">${escHtml(T('shows.tickets'))}</a>` : ''}
         </div>
         <span class="show-tag">${escHtml(s.tag)}</span>
       </div>
@@ -1624,11 +1752,12 @@
     try {
       const res = await fetch('/api/data');
       if (!res.ok) return;
-      const { shows, content, photos, sections } = await res.json();
+      const { shows, content, photos, sections, texts } = await res.json();
       if (shows)   { localStorage.setItem(SHOWS_KEY,   JSON.stringify(shows));   renderShows();  }
       if (content) { localStorage.setItem(CONTENT_KEY, JSON.stringify(content)); applyContent(); }
       if (photos)  { localStorage.setItem(PHOTOS_KEY,  JSON.stringify(photos));  applyPhotos();  }
       if (sections) { localStorage.setItem(SECTIONS_KEY, JSON.stringify(sections)); applySections(); sectionsRenderToggles(); }
+      if (texts)    { localStorage.setItem(TEXTS_KEY, JSON.stringify(texts)); applyTexts(); renderTextEditor(); renderShows(); }
     } catch(e) { /* use localStorage fallback silently */ }
   }
   loadFromAPI();
@@ -1670,6 +1799,7 @@
       contentPopulateForm();
       photosRenderSlots();
       sectionsRenderToggles();
+      renderTextEditor();
     } else {
       errEl.textContent = msg;
       errEl.style.display = 'block';
@@ -1785,6 +1915,10 @@
     document.getElementById('cf-soc-ig').value    = c.socialIg || '';
     document.getElementById('cf-soc-yt').value    = c.socialYt || '';
     document.getElementById('cf-soc-sp').value    = c.socialSp || '';
+    document.getElementById('cf-spotify-artist').value = c.spotifyArtist || '';
+    document.getElementById('cf-apple').value     = c.appleMusicUrl || '';
+    document.getElementById('cf-youtube').value   = c.youtube || '';
+    document.getElementById('cf-email').value     = c.contactEmail || '';
   }
 
   function contentSave() {
@@ -1801,6 +1935,10 @@
       socialIg:    document.getElementById('cf-soc-ig').value.trim() || CONTENT_DEFAULTS.socialIg,
       socialYt:    document.getElementById('cf-soc-yt').value.trim() || CONTENT_DEFAULTS.socialYt,
       socialSp:    document.getElementById('cf-soc-sp').value.trim() || CONTENT_DEFAULTS.socialSp,
+      spotifyArtist: document.getElementById('cf-spotify-artist').value.trim(),
+      appleMusicUrl: document.getElementById('cf-apple').value.trim(),
+      youtube:       document.getElementById('cf-youtube').value.trim(),
+      contactEmail:  document.getElementById('cf-email').value.trim() || CONTENT_DEFAULTS.contactEmail,
     };
     localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
     syncToAPI(CONTENT_KEY, data);
@@ -1818,16 +1956,67 @@
     setTimeout(() => { const m = document.getElementById('cf-msg'); if(m) m.innerHTML=''; }, 3000);
   }
 
+  // ── ADMIN: ALL TEXT ──
+  function renderTextEditor() {
+    const box = document.getElementById('tx-fields');
+    if (!box) return;
+    const t = getTexts();
+    const items = [];
+    document.querySelectorAll('[data-edit]').forEach(el => {
+      let group = 'Other';
+      for (const [sel, name] of TEXT_GROUPS) if (el.closest(sel)) { group = name; break; }
+      items.push({ key: el.dataset.edit, group, label: el.dataset.label || el.dataset.edit,
+                   def: TEXT_DEFAULT[el.dataset.edit], multi: el.tagName === 'P' || el.hasAttribute('data-rich') });
+    });
+    TEXT_EXTRA.forEach(x => items.push({ key: x.key, group: x.group, label: x.label, def: x.def, multi: false }));
+    const order = TEXT_GROUPS.map(g => g[1]).concat(['Other']);
+    items.sort((a, b) => order.indexOf(a.group) - order.indexOf(b.group));
+    let html = '', cur = '';
+    items.forEach(it => {
+      if (it.group !== cur) { cur = it.group; html += '<span class="adm-label" style="margin-top:1.3rem;display:block">' + escHtml(cur) + '</span>'; }
+      const v = typeof t[it.key] === 'string' ? t[it.key] : (it.def || '');
+      html += '<label style="display:block;margin-bottom:.7rem"><span style="display:block;font-size:.7rem;color:var(--dim);margin-bottom:.25rem">' + escHtml(it.label) + '</span>' +
+        (it.multi ? '<textarea class="adm-input" rows="' + (/\n/.test(v) || v.length > 80 ? 3 : 2) + '"' : '<input class="adm-input"') +
+        ' data-tx="' + escHtml(it.key) + '" data-def="' + escHtml(it.def || '') + '"' + (it.multi ? '>' + escHtml(v) + '</textarea>' : ' value="' + escHtml(v) + '">') + '</label>';
+    });
+    box.innerHTML = html;
+  }
+  function textsSave() {
+    const t = {};
+    document.querySelectorAll('#tx-fields [data-tx]').forEach(f => {
+      const v = f.value.replace(/\r/g, '').trim();
+      if (v !== (f.dataset.def || '')) t[f.dataset.tx] = v;      // only keep what differs from the default
+    });
+    localStorage.setItem(TEXTS_KEY, JSON.stringify(t));
+    const syncP = syncToAPI(TEXTS_KEY, t);
+    applyTexts(); renderShows();
+    const msg = document.getElementById('tx-msg');
+    syncP.then(ok => {
+      msg.innerHTML = ok ? '<span class="adm-ok">✓ Text saved — live on all devices.</span>'
+        : '<span class="adm-err">Changed here but NOT saved to the server, so other devices won’t see it. Check Redis is connected, then try again.</span>';
+      if (ok) setTimeout(() => { msg.innerHTML = ''; }, 3500);
+    });
+  }
+  function textsReset() {
+    if (!confirm('Reset all of this text to the original defaults?')) return;
+    localStorage.removeItem(TEXTS_KEY);
+    syncToAPI(TEXTS_KEY, {});
+    applyTexts(); renderShows(); renderTextEditor();
+    const msg = document.getElementById('tx-msg');
+    msg.innerHTML = '<span class="adm-ok">✓ Text reset to defaults.</span>';
+    setTimeout(() => { msg.innerHTML = ''; }, 3000);
+  }
+
   // ── ADMIN: SECTIONS ──
   function sectionsRenderToggles() {
     const box = document.getElementById('sec-toggles');
     if (!box) return;
     const st = getSections();
     box.innerHTML = SECTION_LIST.map(({ id, label }) => {
-      const exists = !!document.getElementById(id);
+      const exists = !!document.getElementById(id) && (id !== 'videos' || !!extractYouTubeId(getContent().youtube));
       return `
         <label style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border);${exists ? 'cursor:pointer' : 'opacity:.5'}">
-          <span style="color:var(--cream);font-size:.9rem">${label}${exists ? '' : '<small style="display:block;color:var(--dim);font-size:.72rem;margin-top:.2rem">Add a YouTube video ID in band.config.mjs to enable this section.</small>'}</span>
+          <span style="color:var(--cream);font-size:.9rem">${label}${exists ? '' : '<small style="display:block;color:var(--dim);font-size:.72rem;margin-top:.2rem">Add a YouTube link in the Content tab to enable this section.</small>'}</span>
           <input type="checkbox" ${st[id] && exists ? 'checked' : ''} ${exists ? '' : 'disabled'} onchange="sectionToggle('${id}', this.checked)" style="width:1.2rem;height:1.2rem;accent-color:var(--gold);flex-shrink:0">
         </label>`;
     }).join('');
@@ -2227,16 +2416,16 @@
           document.getElementById('inquiry-form').reset();
         } else { throw new Error(); }
       } catch {
-        msg.innerHTML = '<span style="color:#c94a3a">Something went wrong. Please try again or email ' + escHtml(BAND.contact.email) + ' directly.</span>';
+        msg.innerHTML = '<span style="color:#c94a3a">Something went wrong. Please try again or email ' + escHtml(getContent().contactEmail) + ' directly.</span>';
       }
     } else {
       // Fallback: open pre-filled mailto
       const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-      window.open(`mailto:${BAND.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+      window.open(`mailto:${getContent().contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
       msg.innerHTML = '<span style="color:#6aad6a">Opening your email app…</span>';
       document.getElementById('inquiry-form').reset();
     }
-    btn.disabled = false; btn.textContent = 'Send Inquiry';
+    btn.disabled = false; btn.textContent = (getTexts()['connect.send'] ?? TEXT_DEFAULT['connect.send'] ?? 'Send Inquiry');
   }
 
   function photoFromTourUrl() {
@@ -2322,6 +2511,7 @@
         syncToAPI(CONTENT_KEY, getContent()),
         syncToAPI(PHOTOS_KEY,  getPhotos()),
         syncToAPI(SECTIONS_KEY, getSections()),
+        syncToAPI(TEXTS_KEY,   getTexts()),
       ]);
       msg.innerHTML = '<span style="color:#6aad6a">✓ Synced</span>';
     } catch(e) {

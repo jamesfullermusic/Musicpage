@@ -36,9 +36,10 @@ Everything band-specific lives in **one file: `band.config.mjs`**.
    in the config to match and push.
 
 ### Using the Admin panel
-Go to `https://their-site.com/#admin` and enter `ADMIN_PASS`. Tabs: **Shows**, **Content**
-(text + social links + form ID), **Photos** (upload and crop), **Sections** (switch whole
-sections on/off). Changes go live immediately.
+Go to `https://their-site.com/#admin` and enter `ADMIN_PASS`. Tabs: **Shows**, **Content** (top-banner text, bio,
+social links, Spotify / Apple Music / YouTube links, form ID, contact email), **Photos** (upload and
+crop, plus the hero video), **All Text** (every other word on the page: menu labels, headings, buttons,
+paragraphs, footer — edit and Save), **Sections** (switch whole sections on/off). Changes go live immediately.
 
 > Admin saves override the defaults in `band.config.mjs`. If you later edit the config text and
 > nothing changes on the live site, that's why — use the Admin panel (Content → *Reset to
