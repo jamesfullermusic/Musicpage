@@ -16,7 +16,7 @@ export default {
   // ── Site / SEO ────────────────────────────────────────────────────────────
   site: {
     slug: 'band-name',                        // lowercase letters, numbers, dashes only
-    url: 'https://musicpage.vercel.app',      // final domain, no trailing slash — change this when a custom domain is connected
+    url: 'https://jamesfullermusic.com',      // final domain, no trailing slash
                                               // (link previews build their image address from it)
     title: 'James Fuller — Singer · Songwriter',        // browser tab + link previews
     siteName: 'James Fuller Music',
