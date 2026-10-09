@@ -71,9 +71,11 @@
       width: 200%; height: 200%;
       z-index: 3;
       pointer-events: none;
-      opacity: .11;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
+      /* two speckle layers (light + dark specks) so it reads as grain without lifting the blacks */
+      opacity: .18;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 7 0 0 0 -3.5'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -7 0 0 0 3.5'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23f)'/%3E%3C/svg%3E");
+      background-size: 256px 256px, 256px 256px;
       will-change: transform;
       animation: filmGrain .8s steps(1) infinite;
     }
@@ -181,7 +183,7 @@
       position: absolute; inset: 0; pointer-events: none; z-index: 2;
       background:
         radial-gradient(ellipse 65% 55% at 50% 60%, rgba({{theme.goldRgb}},.11) 0%, transparent 70%),
-        radial-gradient(ellipse 90% 80% at 50% 100%, rgba(190,60,35,.2) 0%, transparent 55%);
+        radial-gradient(ellipse 90% 80% at 50% 100%, rgba(180,80,20,.16) 0%, transparent 55%);
     }
     #hero::after {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
@@ -196,8 +198,17 @@
     }
     .hero-bg-video {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: center; z-index: 0;
-      filter: brightness(.45) saturate(.8); pointer-events: none;
+      object-fit: cover; object-position: center; z-index: 0; pointer-events: none; background: transparent;
+    }
+    #hero.has-video .hero-overlay {
+      background: linear-gradient(to bottom,
+        rgba({{theme.bgRgb}},.62) 0%, rgba({{theme.bgRgb}},.4) 40%, rgba({{theme.bgRgb}},.68) 100%);
+    }
+    .hero-play {
+      display: none; position: absolute; z-index: 5; right: 1.2rem; bottom: 1.4rem;
+      border: 1px solid var(--gold); background: rgba({{theme.bgRgb}},.7); color: var(--gold); cursor: pointer;
+      font: 700 .64rem 'Afacad', sans-serif; letter-spacing: .16em; text-transform: uppercase; padding: .7rem 1rem; border-radius: 99px;
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     }
     .hero-bg-video[hidden] { display: none; }
     .hero-overlay {
@@ -333,7 +344,7 @@
     .portrait-wrap { position: relative; }
     .portrait-box {
       width: 100%; aspect-ratio: 3/4;
-      background: linear-gradient(135deg, var(--bg-3) 0%, #1f0d0a 100%);
+      background: linear-gradient(135deg, var(--bg-3) 0%, #1d140d 100%);
       display: flex; align-items: center; justify-content: center;
       border: 1px solid var(--border);
       position: relative; overflow: hidden;
@@ -495,7 +506,7 @@
 
     /* ── FOOTER ── */
     footer {
-      background: #0a0505; padding: 2.8rem 4rem;
+      background: #090604; padding: 2.8rem 4rem;
       border-top: 1px solid var(--border);
     }
     .foot-inner {
@@ -850,6 +861,7 @@
       <span data-edit="hero.ctaFollow" data-label="Button: Follow">Follow Along</span>
     </a>
   </div>
+  <button type="button" class="hero-play" id="hero-play" onclick="heroVideoPlayTap()">▶ Play video</button>
   <div class="hero-scroll">
     <span data-edit="hero.scroll" data-label="“Scroll” hint">Scroll</span>
     <div class="scroll-bar"></div>
@@ -1440,7 +1452,7 @@
   // Shows (in the admin) whether the saved hero video actually plays in this browser
   function heroVideoStatus(state) {
     const el = document.getElementById('hero-bg-video');
-    if (state === 'error' && el) el.hidden = true;   // fall back to the hero photo
+    if (state === 'error' && el) { el.hidden = true; const h = document.getElementById('hero'); if (h) h.classList.remove('has-video'); }   // fall back to the hero photo
     const box = document.getElementById('hv-status');
     if (!box) return;
     const msg = {
@@ -1454,24 +1466,76 @@
   function applyHeroVideo() {
     const el = document.getElementById('hero-bg-video');
     if (!el) return;
+    const hero = document.getElementById('hero');
     const url = getHeroVideo();
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     heroVideoStatus(url ? (reduced ? 'reduced' : 'none') : 'none');
     if (url && !reduced) {
       if (el.getAttribute('src') !== url) el.setAttribute('src', url);
       el.hidden = false;
-      el.muted = true; el.defaultMuted = true; el.setAttribute('playsinline', '');
-      const tryPlay = () => { const pr = el.play(); if (pr && pr.catch) pr.catch(() => {}); };
-      tryPlay();
-      // Phones (Low Power Mode, data saver) may block autoplay until the first touch/scroll — retry then.
+      if (hero) hero.classList.add('has-video');
+      el.muted = true; el.defaultMuted = true; el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
+      heroVideoTryPlay();
+      // Phones (iOS Low Power Mode, data saver) block autoplay until a real tap — retry on the first gesture.
+      // (touchend / pointerup / click count as gestures for media; touchstart and scroll do not.)
       if (!window.__heroVideoRetry) {
         window.__heroVideoRetry = true;
-        ['touchstart', 'scroll', 'click'].forEach(ev => window.addEventListener(ev, () => { if (el.paused && !el.hidden && el.getAttribute('src')) tryPlay(); }, { passive: true }));
+        ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, () => {
+          if (el.paused && !el.hidden && el.getAttribute('src')) heroVideoTryPlay();
+        }, { passive: true }));
+        el.addEventListener('playing', () => { const b = document.getElementById('hero-play'); if (b) b.style.display = 'none'; });
       }
     } else {
       el.hidden = true;
+      if (hero) hero.classList.remove('has-video');
+      const b = document.getElementById('hero-play'); if (b) b.style.display = 'none';
       if (el.getAttribute('src')) { el.pause(); el.removeAttribute('src'); el.load(); }
     }
+    heroVideoDebugStart();
+  }
+  function heroVideoTryPlay() {
+    const el = document.getElementById('hero-bg-video');
+    if (!el || el.hidden || !el.getAttribute('src')) return;
+    const pr = el.play();
+    if (pr && pr.catch) pr.catch(err => {
+      // autoplay was blocked: show a small tap-to-play button so the visitor can start it
+      if (err && err.name === 'NotAllowedError') { const b = document.getElementById('hero-play'); if (b && !document.documentElement.classList.contains('editing')) b.style.display = 'block'; }
+    });
+  }
+  function heroVideoPlayTap() {
+    const el = document.getElementById('hero-bg-video');
+    if (!el) return;
+    el.muted = true;
+    const pr = el.play();
+    if (pr && pr.then) pr.then(() => { const b = document.getElementById('hero-play'); if (b) b.style.display = 'none'; }).catch(() => {});
+  }
+
+  // Open the site with #videodebug on the end to see exactly what a phone is doing with the video
+  function heroVideoDebugStart() {
+    if (!/videodebug/.test(location.hash) || window.__hvDebug) return;
+    const el = document.getElementById('hero-bg-video'); if (!el) return;
+    window.__hvDebug = true;
+    const box = document.createElement('pre');
+    box.style.cssText = 'position:fixed;left:6px;right:6px;bottom:6px;z-index:99999;margin:0;padding:8px;background:rgba(0,0,0,.88);color:#9f9;font:11px/1.35 monospace;white-space:pre-wrap;max-height:55vh;overflow:auto;border:1px solid #9f9;border-radius:6px';
+    document.body.appendChild(box);
+    const log = [];
+    const ev = n => log.push(new Date().toISOString().slice(14, 22) + ' ' + n);
+    ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'pause', 'stalled', 'suspend', 'waiting', 'abort', 'emptied', 'error']
+      .forEach(n => el.addEventListener(n, () => ev(n + (n === 'error' && el.error ? ' code=' + el.error.code + ' ' + (el.error.message || '') : ''))));
+    const can = t => { try { return el.canPlayType(t) || 'no'; } catch (e) { return '?'; } };
+    const render = () => {
+      box.textContent = ['VIDEO DEBUG  (tap to hide)', 'src: ' + (el.getAttribute('src') || '(none)'),
+        'hidden=' + el.hidden + ' paused=' + el.paused + ' muted=' + el.muted + ' ended=' + el.ended,
+        'readyState=' + el.readyState + ' networkState=' + el.networkState + ' t=' + el.currentTime.toFixed(1) + ' dur=' + (el.duration || 0).toFixed(1),
+        'size=' + el.videoWidth + 'x' + el.videoHeight + '  buffered=' + (el.buffered.length ? el.buffered.end(el.buffered.length - 1).toFixed(1) + 's' : '0'),
+        'h264=' + can('video/mp4; codecs="avc1.42E01E"') + ' h264-high=' + can('video/mp4; codecs="avc1.640028"') + ' hevc=' + can('video/mp4; codecs="hvc1.1.6.L93.B0"') + ' webm=' + can('video/webm'),
+        'reduceMotion=' + (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) + ' touch=' + ('ontouchstart' in window),
+        'file: ' + (window.__hvHead || 'checking…'), '', ...log.slice(-14)].join('\n');
+    };
+    box.onclick = () => box.remove();
+    const src = el.getAttribute('src');
+    if (src) fetch(src, { method: 'HEAD' }).then(r => { window.__hvHead = r.status + ' ' + r.headers.get('content-type') + ' ' + (r.headers.get('content-length') ? (r.headers.get('content-length') / 1048576).toFixed(1) + ' MB' : '?') + ' ranges=' + r.headers.get('accept-ranges'); }).catch(e => { window.__hvHead = 'HEAD failed: ' + e.message; });
+    setInterval(render, 800); render();
   }
 
   // ── APPLY STORED DATA TO PAGE ──
