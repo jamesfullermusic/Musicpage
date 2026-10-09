@@ -119,6 +119,7 @@ export default {
     instagram: '',
     youtube: '',
     spotify: '',
+    tiktok: '',
   },
 
   // ── Contact form ──────────────────────────────────────────────────────────
