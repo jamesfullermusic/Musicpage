@@ -17,13 +17,13 @@ export default {
   site: {
     slug: 'band-name',                        // lowercase letters, numbers, dashes only
     url: 'https://www.example.com',           // final domain, no trailing slash
-    title: 'James Fuller — Genre · City',        // browser tab + link previews
+    title: 'James Fuller — Singer · Songwriter',        // browser tab + link previews
     siteName: 'James Fuller Music',
-    description: 'James Fuller — a short one-sentence description for Google.',
-    shareDescription: 'Genre · Genre · Original Music.',   // shown in iMessage/Facebook previews
+    description: 'James Fuller — singer-songwriter. Original songs, live shows, and music to stream.',
+    shareDescription: 'Original songs · Live music · Stream now.',   // shown in iMessage/Facebook previews
     favicon: '/favicon.svg',
     ogImage: 'images/og-preview.png',         // 1280×720 PNG/JPG for link previews ('' to skip)
-    footerNote: 'Built with heart in Your State',  // small line in footer ('' to hide)
+    footerNote: 'Thanks for listening.',  // small line in footer ('' to hide)
   },
 
   // ── Artist / band name ────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ export default {
   // ── Sections on/off ───────────────────────────────────────────────────────
   // Starting point only — the Admin panel's "Sections" tab overrides these.
   // false = hidden from the site and the menu. (The top banner is always shown;
-  // Videos also needs video.youtubeId below.)
+  // Videos also needs a YouTube link — set below or in Admin → Content.)
   sections: {
     about: true,
     music: true,
@@ -51,8 +51,8 @@ export default {
   // ── Hero ──────────────────────────────────────────────────────────────────
   hero: {
     eyebrow: 'Singer · Songwriter · Guitar',
-    tagline: '"Your tagline goes here"',
-    genre: 'Genre · Genre · Original Music',
+    tagline: '"Songs for the long drive home"',
+    genre: 'Original Music · Live Shows',
     background: 'images/hero-bg.jpg',
     video: '',                // optional looping hero video: 'images/hero.mp4' or a https:// link ('' = photo only).
                               // Keep it short, muted, under ~8 MB. The photo above is the fallback.
@@ -62,18 +62,18 @@ export default {
   about: {
     portrait: 'images/portrait.jpg',
     portraitAlt: 'James Fuller performing live',
-    pullQuote: '"A short quote or motto."',
-    headingTop: 'A Sound Built',
-    headingEm: 'From the Ground Up',
+    pullQuote: '"Write it honest. Play it like you mean it."',
+    headingTop: 'Honest Songs,',
+    headingEm: 'Played From the Heart',
     bios: [
-      'First bio paragraph. Where they are from, how they started, what they sound like.',
-      'Second paragraph. What a live show feels like and who they play for.',
-      '',                      // optional third paragraph ('' to hide)
+      'James Fuller writes songs about the people, places, and small moments that make a life — the kind of songs that sound better the second time you hear them.',
+      'Whether it is a quiet room with an acoustic guitar or a full stage with the band behind him, a James Fuller show is about connection: a good story, a good melody, and a crowd singing along by the last chorus.',
+      'New music is on the way. Follow along for show announcements, behind-the-scenes clips, and first listens.',
     ],
     stats: [                  // three little badges under the bio
-      { value: 'Your State',  label: 'Home State' },
-      { value: 'Self-Taught', label: 'Guitar & Voice' },
-      { value: 'Original',    label: 'Songwriter' },
+      { value: 'Original',  label: 'Songwriter' },
+      { value: 'Live',      label: 'Performer' },
+      { value: 'New Music', label: 'Coming Soon' },
     ],
   },
 
@@ -81,19 +81,16 @@ export default {
   music: {
     spotifyArtistId: '',      // the ID at the end of the artist's Spotify URL ('' hides the player)
     appleMusicUrl: '',
-    blurb: 'Our music is streaming everywhere. Pick your platform and press play.',
+    blurb: 'Stream James Fuller on your favorite platform and press play.',
   },
 
   // ── Shows ─────────────────────────────────────────────────────────────────
   shows: {
-    note: 'Follow us on Facebook and Instagram for the latest show announcements.',
+    note: 'Follow along on social media for the latest show announcements.',
     poster: 'images/tour-poster.jpg',
     posterAlt: 'Live music calendar',
     // month: 'Jul' (or 'TBA'), day: '04' (or '—'). Past dates hide themselves.
-    list: [
-      { month: 'Jul', day: '04', venue: 'Example Festival', location: 'City, State · Outdoor Stage', tag: 'Festival', url: '' },
-      { month: 'TBA', day: '—',  venue: 'Example Venue',    location: 'City, State · Live Venue',    tag: 'Venue',    url: '' },
-    ],
+    list: [],                 // no placeholder dates — add real shows in Admin → Shows
   },
 
   // ── Photo gallery ─────────────────────────────────────────────────────────
@@ -109,9 +106,9 @@ export default {
   // ── Featured video ('' youtubeId removes the whole Videos section) ────────
   video: {
     youtubeId: '',            // e.g. the "ghy_0dAmHb4" in youtube.com/watch?v=ghy_0dAmHb4
-    title: 'Song Title',
+    title: 'Live From the Stage',
     paragraphs: [
-      'A couple of sentences about the video.',
+      'A live moment, a new song, or a look behind the scenes — straight from James.',
       '',                      // optional second paragraph
     ],
   },
