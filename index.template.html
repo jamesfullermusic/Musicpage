@@ -1542,9 +1542,14 @@
     return syncToAPI(SHOWS_KEY, arr);
   }
 
+  // Social links: a link typed in the admin wins, but a saved *blank* falls back to the one in band.config.mjs
+  // (the admin saves untouched boxes as blank, which would otherwise hide a link the config supplies).
+  const SOCIAL_KEYS = ['socialFb', 'socialIg', 'socialYt', 'socialSp', 'socialTt'];
   function getContent() {
-    try { const s = localStorage.getItem(CONTENT_KEY); if (s) return Object.assign({}, CONTENT_DEFAULTS, JSON.parse(s)); } catch(e) {}
-    return Object.assign({}, CONTENT_DEFAULTS);
+    let c = Object.assign({}, CONTENT_DEFAULTS);
+    try { const s = localStorage.getItem(CONTENT_KEY); if (s) c = Object.assign(c, JSON.parse(s)); } catch(e) {}
+    SOCIAL_KEYS.forEach(k => { if (!c[k] && CONTENT_DEFAULTS[k]) c[k] = CONTENT_DEFAULTS[k]; });
+    return c;
   }
   function getPhotos() {
     try {
