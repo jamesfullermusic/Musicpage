@@ -115,13 +115,13 @@ export default {
     ],
   },
 
-  // ── Social links ('' hides the icon everywhere) ───────────────────────────
+  // ── Social links ('' hides the icon everywhere). A link saved in Admin → Content wins over these. ──
   social: {
     facebook: '',
     instagram: '',
     youtube: '',
     spotify: '',
-    tiktok: '',
+    tiktok: 'https://www.tiktok.com/@jamesfullermusic',
   },
 
   // ── Contact form ──────────────────────────────────────────────────────────
