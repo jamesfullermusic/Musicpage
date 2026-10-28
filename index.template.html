@@ -896,7 +896,7 @@
     .about-text .about-stats { justify-content: center; }
     @media (prefers-reduced-motion: reduce) { .portrait-box img, .about-text { transform: none; } .portrait-box img { transform: scale(1.02); } }
     @media (min-width: 921px) {
-      /* desktop: portrait fills the right third of the screen, edge to edge; text sits left and runs over its soft edge */
+      /* desktop: portrait fills the right third of the screen, edge to edge; text is centred on the other two thirds */
       #about { overflow: hidden; }
       .about-grid { display: block; position: static; }
       .portrait-wrap { position: absolute; top: 0; right: 0; bottom: 0; width: 33.334vw; max-width: none; margin: 0; overflow: visible; }
@@ -906,10 +906,9 @@
         -webkit-mask-composite: source-in; mask-composite: intersect; }
       .portrait-box img { border-radius: 0; }
       .portrait-pull { left: 4rem; top: auto; bottom: 4rem; }
-      .about-text { width: min(46rem, 64vw); margin: 0; text-align: left; }
-      .about-text .body-serif { margin-left: 0; margin-right: 0; }
-      .about-text .rule { margin-left: 0; margin-right: 0; }
-      .about-text .about-stats { justify-content: flex-start; }
+      .about-text { width: min(46rem, 58vw); margin: 0 auto; left: -16.667vw; text-align: center; }
+      .about-text .body-serif, .about-text .rule { margin-left: auto; margin-right: auto; }
+      .about-text .about-stats { justify-content: center; }
     }
     #about .body-serif { margin-bottom: 1.15rem; }
     .about-stats { gap: 0; padding-top: 2rem; margin-top: 3rem; }
