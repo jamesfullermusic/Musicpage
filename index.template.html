@@ -883,7 +883,10 @@
     /* about: centred arch portrait with the text layered over it (text drifts at a different speed on scroll) */
     .about-grid { grid-template-columns: 1fr; gap: 0; justify-items: center; align-items: start; }
     .portrait-wrap { order: 0; width: min(440px, 80vw); margin: 0 auto; z-index: 1; }
-    .portrait-box { border: 0; border-radius: 999px 999px 0 0; }
+    .portrait-box { border: 0; border-radius: 999px 999px 0 0;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent), linear-gradient(180deg, transparent, #000 18%, #000 62%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent), linear-gradient(180deg, transparent, #000 18%, #000 62%, transparent);
+      -webkit-mask-composite: source-in; mask-composite: intersect; }
     .portrait-box img { border-radius: 999px 999px 0 0; will-change: transform; transform: scale(1.12) translateY(var(--pimg, 0px)); }
     .portrait-box::after { content: ''; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.55) 100%); }
     .portrait-pull { left: -3rem; right: auto; top: 3rem; bottom: auto; max-width: 205px; border-radius: 6px; transform: rotate(-4deg); font-family: var(--f-head); font-weight: 400; font-size: 1.02rem; line-height: 1.3; box-shadow: 0 12px 30px rgba(0,0,0,.35); z-index: 6; }
