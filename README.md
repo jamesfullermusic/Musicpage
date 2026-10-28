@@ -43,6 +43,9 @@ crop, plus the hero video), **Sections** (switch whole sections on/off). Changes
 **Easiest way to edit text:** log in, press **✎ Edit on the page**, then click any text on the real page and type.
 Press **Save changes** (menu labels, headings, buttons, bios, footer — everything). The shortcut pills on the page
 jump to the photo, show-date and link editors, and each section has an on/off pill.
+Open the ☰ menu while editing to change its labels, and use the **🔗 Edit link** buttons beside the two hero
+buttons to point them anywhere (empty = the Spotify / Instagram link from the Connect section). The menu is a
+frosted-glass card (☰ left, name right) whose dropdown also shows icons for every social link that is set.
 
 > Admin saves override the defaults in `band.config.mjs`. If you later edit the config text and
 > nothing changes on the live site, that's why — use the Admin panel (Content → *Reset to
