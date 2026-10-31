@@ -1726,7 +1726,7 @@
   function applyContent() {
     const c = getContent();
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    const setHref = (id, val) => { const el = document.getElementById(id); if (!el) return; if (val) { el.href = val; el.style.display = ''; } else { el.style.display = 'none'; } };
+    const setHref = (id, val) => { const el = document.getElementById(id); if (!el) return; if (val) { el.setAttribute('href', val); if (/^#/.test(val)) { el.removeAttribute('target'); el.removeAttribute('rel'); } else { el.target = '_blank'; el.rel = 'noopener'; } el.style.display = ''; } else { el.style.display = 'none'; } };
     set('hero-eyebrow',    c.heroEyebrow);
     set('hero-tagline',    c.heroTagline);
     set('hero-genre',      c.heroGenre);
@@ -2268,7 +2268,7 @@
       C_('heroTagline', 'Tagline', 'italic'),
       C_('heroGenre', 'Genre line', 'small'),
       { row: [T_('hero.ctaStream', 'Button 1 text', 'btn'), T_('hero.ctaFollow', 'Button 2 text', 'btn')] },
-      { row: [C_('heroStreamUrl', 'Button 1 link (empty = your Spotify link)', 'link'), C_('heroFollowUrl', 'Button 2 link (empty = your Instagram link)', 'link')] },
+      { row: [C_('heroStreamUrl', 'Button 1 link (empty = your Spotify link; #connect = scroll to Connect section)', 'link'), C_('heroFollowUrl', 'Button 2 link (empty = your Instagram link; #connect = scroll to Connect section)', 'link')] },
       T_('hero.scroll', '“Scroll” hint at the bottom', 'small'),
     ] },
     { id: 'about', title: 'About', section: 'about', bg: 's-bg2', go: [['photos', '✎ Change portrait…']], fields: [
@@ -3073,7 +3073,7 @@
 
   function editLinkPrompt(id, field, name, fallback) {
     const cur = (field in window.__editLinks) ? window.__editLinks[field] : (getContent()[field] || '');
-    const v = window.prompt(name + ' link — paste a web address. Leave empty to use your ' + fallback + ' link from the Connect section:', cur);
+    const v = window.prompt(name + ' link — paste a web address, or type #connect to scroll to the Connect section on this page. Leave empty to use your ' + fallback + ' link from the Connect section:', cur);
     if (v === null) return;
     const url = v.trim();
     if (url && !/^(https?:\/\/|mailto:|tel:|\/|#)/i.test(url)) { alert('Please start the link with https://'); return; }
@@ -3081,7 +3081,7 @@
     const a = document.getElementById(id);
     const c = getContent();
     const target = url || (field === 'heroFollowUrl' ? c.socialIg : c.socialSp) || '#';
-    a.href = target; a.style.display = '';
+    a.setAttribute('href', target); if (/^#/.test(target)) { a.removeAttribute('target'); a.removeAttribute('rel'); } else { a.target = '_blank'; a.rel = 'noopener'; } a.style.display = '';
     editMarkDirty();
   }
 
